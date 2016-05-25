@@ -33,11 +33,11 @@
 	},
 	"autoload":
 	{
-		"psr-4": { "xscn\\": "src" }
+		"psr-4": { "dekuan\\": "src" }
 	},
 	"autoload-dev":
 	{
-		"psr-4": { "xscn\\": "src" }
+		"psr-4": { "dekuan\\": "src" }
 	},
 	"bin": [ "bin/lava" ],
 
