@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<script language="JavaScript" src="jquery-1.11.3.js"></script>
+<script language="JavaScript" src="disableSelection.js"></script>
+
+<h1>Page 1</h1>
+<input type="button" id="id_back" value=" Go Back " />
+<hr />
+<div id="id_div">You can not copy this text.</div>
+
+
+<script language="JavaScript">
+$( document ).ready(function()
+{
+    console.log( "ready!" );
+    $("#id_div").disableSelection();
+
+});
+</script>
+
+</body>
+</html>

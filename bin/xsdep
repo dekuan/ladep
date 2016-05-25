@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php
+
+if ( 'cli' !== PHP_SAPI )
+{
+	echo 'Warning: xsdep should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI' . PHP_EOL;
+}
+
+
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/xscn/xsconst/src/CConst.php';
+require __DIR__ . '/../vendor/xscn/xslib/src/CLib.php';
+
+
+//	for dev
+@ ini_set( 'display_errors',		'On' );
+@ ini_set( 'max_execution_time',	'0' );
+@ ini_set( 'max_input_time',		'0' );
+@ ini_set( 'memory_limit',		'512M' );
+@ error_reporting( E_ALL );
+
+@ ini_set( 'date.timezone', 'Etc/GMT+0' );
+if ( PHP_VERSION > '5.1' )
+{
+	@ date_default_timezone_set( 'Etc/GMT+0' );
+}
+
+
+
+use Symfony\Component\Console\Application;
+use xscn\xsdep;
+
+
+//
+//	TODO
+//	try to connect database on server before we push code to server
+//	php -r "var_dump( mysql_pconnect( 'comment1xscn.mysql.rds.aliyuncs.com', 'xcomm1w', 'Wd33IXXTErdNre' ) );"
+//
+
+//
+//	...
+//
+$application = new Application( 'xscn/xsdep', '@package_version@' );
+$application->add( new xsdep\command\CCommandBuild() );
+$application->add( new xsdep\command\CCommandPush() );
+$application->add( new xsdep\command\CCommandRollback() );
+$application->add( new xsdep\command\CCommandPulllog() );
+$application->add( new xsdep\command\CCommandView() );
+$application->run();

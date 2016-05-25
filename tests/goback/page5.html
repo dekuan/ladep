@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<script language="JavaScript" src="jquery-1.11.3.js"></script>
+<script language="JavaScript" src="json.js"></script>
+<script language="JavaScript" src="llib.js"></script>
+<script language="JavaScript" src="objectstorage.js"></script>
+<script language="JavaScript" src="locationstack.js"></script>
+<script language="JavaScript" src="goback.js"></script>
+
+<h1>Page 5</h1>
+<input type="button" id="id_back" value=" Go Back " />
+<a href="page1.html">page1</a> |
+<a href="page2.html">page2</a> |
+<a href="page3.html">page3</a> |
+<a href="page4.html">page4</a> |
+<a href="page5.html">page5</a>
+
+<hr />
+<h3>Stack:</h3>
+<div id="id_stack"></div>
+
+
+<script language="JavaScript">
+    $( document ).ready(function()
+    {
+        console.log( "ready!" );
+
+        //  ...
+        var cGoBack     = new CGoBack( null );
+        var arrStack    = null;
+        var i;
+        var sStackList;
+
+        //  ...
+        cGoBack.IAmHere();
+        arrStack    = cGoBack.GetStack();
+
+        $( "#id_back").off( "click").on( "click", function( oEvent )
+        {
+            cGoBack.GoBack();
+        });
+
+        //
+        sStackList = '';
+        if ( $lisa( arrStack ) && arrStack.length > 0 )
+        {
+            for ( i = arrStack.length - 1; i >= 0; i -- )
+            {
+                sStackList += "<p>" + ( i + 1 ) + " - " + arrStack[ i ] + "</p>";
+            }
+        }
+        $( "#id_stack").html( sStackList );
+
+    });
+</script>
+
+</body>
+</html>

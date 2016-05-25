@@ -1,0 +1,51 @@
+{
+	"name": "xscn/xsdep",
+	"description": "Library for XS.CN.",
+	"type": "library",
+	"license": "proprietary",
+	"authors":
+	[
+		{
+			"name": "liuqixing",
+			"email": "liuqixing@readnovel.com"
+		}
+	],
+	"extra":
+	{
+		"branch-alias":
+		{
+			"dev-master": "0.3.x-dev"
+		}
+	},
+	"require":
+	{
+		"php" : ">=5.3.0",
+		"herrera-io/phar-update" : "~1.0",
+		"symfony/console" : "^2.5 || ^3.0",
+		"seld/jsonlint" : "^1.4",
+		"symfony/finder" : "^2.2 || ^3.0",
+		"symfony/process" : "^2.1 || ^3.0",
+		"symfony/filesystem" : "^2.5 || ^3.0",
+		"seld/phar-utils" : "^1.0",
+		"seld/cli-prompt" : "^1.0",
+		"xscn/xsconst" : ">=1.0",
+		"xscn/xslib" : ">=1.0"
+	},
+	"autoload":
+	{
+		"psr-4": { "xscn\\": "src" }
+	},
+	"autoload-dev":
+	{
+		"psr-4": { "xscn\\": "src" }
+	},
+	"bin": [ "bin/xsdep" ],
+
+	"repositories":
+	[
+		{
+			"type": "composer",
+			"url": "http://packagist.corp.xs.cn"
+		}
+	]
+}
