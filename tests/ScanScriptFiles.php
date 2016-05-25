@@ -1,7 +1,7 @@
 <?php
 
-require_once ( __DIR__ . '/../src/xsdep/libs/Lib.php' );
-require_once ( __DIR__ . '/../src/xsdep/models/compressores/CYUICompressor.php' );
+require_once ( __DIR__ . '/../src/lava/libs/Lib.php' );
+require_once ( __DIR__ . '/../src/lava/models/compressores/CYUICompressor.php' );
 require_once ( __DIR__ . '/../vendor/autoload.php' );
 require_once ( __DIR__ . '/../vendor/xscn/xsconst/src/CConst.php' );
 
@@ -9,8 +9,8 @@ require_once ( __DIR__ . '/../vendor/xscn/xsconst/src/CConst.php' );
 use Illuminate\Support\Facades\Config;
 use Symfony\Component\Process;
 
-use xscn\xsdep\libs;
-use xscn\xsdep\models\compressores;
+use dekuan\lava\libs;
+use dekuan\lava\models\compressores;
 
 
 /**
@@ -51,7 +51,7 @@ class ScanScriptFiles extends PHPUnit_Framework_TestCase
 		//
 		//	...
 		//
-		$arrFiles = xscn\xsdep\libs\Lib::REnumerateDir( $sViewDir );
+		$arrFiles = dekuan\lava\libs\Lib::REnumerateDir( $sViewDir );
 
 		if ( is_array( $arrFiles ) && count( $arrFiles ) > 0 )
 		{

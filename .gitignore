@@ -1,7 +1,6 @@
 /.idea/
 /.svn/
 /vendor/
-/src/xsdep/.idea/
 /src/lava/.idea/
 /releases/
 /node_modules/
@@ -9,7 +8,6 @@
 composer.lock
 box.json
 private.key
-xsdep.phar.pubkey
 lava.phar.pubkey
 
 
