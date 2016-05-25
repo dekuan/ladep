@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta property="qc:admins" content="27155754347564603636" />
     <title>用户中心</title>
-    <link href="{{asset('/css/bootstrap.css')}}" rel="stylesheet" xsdep="1" >
-    <script src="{{asset('/js/html5shiv.min.js')}}" xsdep="1" ></script>
-    <script src="{{asset('/js/respond.js')}}" xsdep="1" ></script>
+    <link href="{{asset('/css/bootstrap.css')}}" rel="stylesheet" lava="1" >
+    <script src="{{asset('/js/html5shiv.min.js')}}" lava="1" ></script>
+    <script src="{{asset('/js/respond.js')}}" lava="1" ></script>
     <link href="{{asset('/images/logo-32-32.png')}}" rel="Shortcut Icon" type="image/x-icon">
-    <link href="{{asset('/css/usercenter.css')}}" xsdep="1" rel="stylesheet">
-    <link href="{{asset('/css/jquery.Jcrop.min.css')}}" xsdep="1" rel="stylesheet">
+    <link href="{{asset('/css/usercenter.css')}}" lava="1" rel="stylesheet">
+    <link href="{{asset('/css/jquery.Jcrop.min.css')}}" lava="1" rel="stylesheet">
 </head>
 <body>
 <input name="hidden_umid" class="js-hidden-umid" type="hidden">
@@ -508,18 +508,18 @@
     </div>
 </div>
 <!--<script src="{{asset('/js/jquery.js')}}"></script>-->
-<script src="{{asset('/js/jquery-1.11.3.js')}}" xsdep="1" ></script>
-<script src="{{asset('/js/bootstrap.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/bootstrap.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/usercenter.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/loaddata.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/xslib.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/llib.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/laddress.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/fileuploader-2.0b.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/lavatar.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/birthday.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/jquery.Jcrop.js')}}" xsdep="1"></script>
+<script src="{{asset('/js/jquery-1.11.3.js')}}" lava="1" ></script>
+<script src="{{asset('/js/bootstrap.js')}}" lava="1"></script>
+<script src="{{asset('/js/bootstrap.js')}}" lava="1"></script>
+<script src="{{asset('/js/usercenter.js')}}" lava="1"></script>
+<script src="{{asset('/js/loaddata.js')}}" lava="1"></script>
+<script src="{{asset('/js/xslib.js')}}" lava="1"></script>
+<script src="{{asset('/js/llib.js')}}" lava="1"></script>
+<script src="{{asset('/js/laddress.js')}}" lava="1"></script>
+<script src="{{asset('/js/fileuploader-2.0b.js')}}" lava="1"></script>
+<script src="{{asset('/js/lavatar.js')}}" lava="1"></script>
+<script src="{{asset('/js/birthday.js')}}" lava="1"></script>
+<script src="{{asset('/js/jquery.Jcrop.js')}}" lava="1"></script>
 <script>
     var g_CLAvatar = new CLAvatar( null );
     var g_cUserCenter = new CUserCenter();

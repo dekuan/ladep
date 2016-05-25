@@ -51,20 +51,20 @@ box build
 #
 git checkout gh-pages
 
-cp xsdep.phar downloads/xsdep-${TAG}.phar
-git add downloads/xsdep-${TAG}.phar
+cp lava.phar downloads/lava-${TAG}.phar
+git add downloads/lava-${TAG}.phar
 
-SHA1=$(openssl sha1 xsdep.phar)
+SHA1=$(openssl sha1 lava.phar)
 
-JSON='name:"xsdep.phar"'
+JSON='name:"lava.phar"'
 JSON="${JSON},sha1:\"${SHA1}\""
-JSON="${JSON},url:\"http://mattketmo.github.io/xsdep/downloads/xsdep-${TAG}.phar\""
+JSON="${JSON},url:\"http://mattketmo.github.io/lava/downloads/lava-${TAG}.phar\""
 JSON="${JSON},version:\"${TAG}\""
 
-if [ -f xsdep.phar.pubkey ]; then
-    cp xsdep.phar.pubkey pubkeys/xsdep-${TAG}.phar.pubkeys
-    git add pubkeys/xsdep-${TAG}.phar.pubkeys
-    JSON="${JSON},publicKey:\"http://mattketmo.github.io/xsdep/pubkeys/xsdep-${TAG}.phar.pubkey\""
+if [ -f lava.phar.pubkey ]; then
+    cp lava.phar.pubkey pubkeys/lava-${TAG}.phar.pubkeys
+    git add pubkeys/lava-${TAG}.phar.pubkeys
+    JSON="${JSON},publicKey:\"http://mattketmo.github.io/lava/pubkeys/lava-${TAG}.phar.pubkey\""
 fi
 
 #

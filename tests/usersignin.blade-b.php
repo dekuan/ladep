@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
     <meta property="qc:admins" content="27155754347564603636" />
     <title>登录</title>
-    <link rel="stylesheet" href="{{asset('/css/bootstrap.css')}}" xsdep="1" >
-    <link rel="stylesheet" href="{{asset('/css/login.css')}}" xsdep="1" />
-    <link rel="stylesheet" href="{{asset('/css/mail_test.css')}}" xsdep="1" />
+    <link rel="stylesheet" href="{{asset('/css/bootstrap.css')}}" lava="1" >
+    <link rel="stylesheet" href="{{asset('/css/login.css')}}" lava="1" />
+    <link rel="stylesheet" href="{{asset('/css/mail_test.css')}}" lava="1" />
     <link href="{{asset('/images/logo-32-32.png')}}" rel="Shortcut Icon" type="image/x-icon">
-    <script src="{{asset('/js/html5shiv.min.js')}}" xsdep="1"></script>
-    <script src="{{asset('/js/respond.js')}}" xsdep="1"></script>
+    <script src="{{asset('/js/html5shiv.min.js')}}" lava="1"></script>
+    <script src="{{asset('/js/respond.js')}}" lava="1"></script>
 </head>
 <body>
 <input name="hidden_umid" class="js-hidden-umid" type="hidden">
@@ -26,7 +26,7 @@
 </div>
  <!--************************************重新发送邮件成功页面******************************************-->
  <!--
- <script src = "{{asset('/js/jquery-1.11.3.js')}}" xsdep =  1 ></script>
+ <script src = "{{asset('/js/jquery-1.11.3.js')}}" lava =  1 ></script>
 
         <div class="row" id="mail_resend_content">
             <div>
@@ -95,12 +95,12 @@
     </div>
 </div>
 
-<script src="{{asset('/js/bootstrap.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/xslib.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/laddress.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/usersignin.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/loaddata.js')}}" xsdep="1"></script>
-<script src="{{asset('/js/purl.js')}}" xsdep="1"></script>
+<script src="{{asset('/js/bootstrap.js')}}" lava="1"></script>
+<script src="{{asset('/js/xslib.js')}}" lava="1"></script>
+<script src="{{asset('/js/laddress.js')}}" lava="1"></script>
+<script src="{{asset('/js/usersignin.js')}}" lava="1"></script>
+<script src="{{asset('/js/loaddata.js')}}" lava="1"></script>
+<script src="{{asset('/js/purl.js')}}" lava="1"></script>
 <script>
     var g_cSignin = new CSignin();
     $(function () {

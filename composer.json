@@ -1,13 +1,13 @@
 {
-	"name": "xscn/xsdep",
-	"description": "Library for XS.CN.",
+	"name": "dekuan/lava",
+	"description": "A great deploy for Laravel framework.",
 	"type": "library",
 	"license": "proprietary",
 	"authors":
 	[
 		{
 			"name": "liuqixing",
-			"email": "liuqixing@readnovel.com"
+			"email": "liuqixing@gmail.com"
 		}
 	],
 	"extra":
@@ -33,13 +33,13 @@
 	},
 	"autoload":
 	{
-		"psr-4": { "xscn\\": "src" }
+		"psr-4": { "dekuan\\": "src" }
 	},
 	"autoload-dev":
 	{
-		"psr-4": { "xscn\\": "src" }
+		"psr-4": { "dekuan\\": "src" }
 	},
-	"bin": [ "bin/xsdep" ],
+	"bin": [ "bin/lava" ],
 
 	"repositories":
 	[

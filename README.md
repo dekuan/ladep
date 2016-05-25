@@ -1,4 +1,4 @@
-# xsdepoly
+# lava deploy
 
 Example of CLI app in PHP
 
@@ -9,14 +9,14 @@ Example of CLI app in PHP
 
 # Launch
 
-	$ php bin/xsdep
-	$ ./bin/xsdep
-	$ ./xsdep.phar
+	$ php bin/lava
+	$ ./bin/lava
+	$ ./lava.phar
 
 # Build
 
 Install the [box](https://github.com/box-project/box2) tool, then run `box build` to build
-a PHAR file. Then you can launch the app: `./xsdep.phar`. It's the easiest way to build a phar without any line of PHP code.
+a PHAR file. Then you can launch the app: `./lava.phar`. It's the easiest way to build a phar without any line of PHP code.
 
 ### install box
 

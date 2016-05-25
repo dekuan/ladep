@@ -15,7 +15,7 @@
         }
     ],
     "git-version": "package_version",
-    "main": "bin/xsdep",
-    "output": "xsdep.phar",
+    "main": "bin/lava",
+    "output": "lava.phar",
     "stub": true
 }

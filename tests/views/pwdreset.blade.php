@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta property="qc:admins" content="27155754347564603636" />
     <title>重置密码</title>
-    <link href="{{asset('/css/bootstrap.css')}}" rel="stylesheet"  xsdep="1" >
-    <link href="{{asset('/css/passwordRefind.css')}}" rel="stylesheet"  xsdep="1" >
+    <link href="{{asset('/css/bootstrap.css')}}" rel="stylesheet"  lava="1" >
+    <link href="{{asset('/css/passwordRefind.css')}}" rel="stylesheet"  lava="1" >
     <link href="{{asset('/images/logo-32-32.png')}}" rel="Shortcut Icon" type="image/x-icon">
-    <script src="{{asset('/js/html5shiv.min.js')}}"  xsdep="1" ></script>
-    <script src="{{asset('/js/respond.js')}}"  xsdep="1" ></script>
+    <script src="{{asset('/js/html5shiv.min.js')}}"  lava="1" ></script>
+    <script src="{{asset('/js/respond.js')}}"  lava="1" ></script>
 </head>
 <body>
 <input name="hidden_umid" class="js-hidden-umid" type="hidden">
@@ -221,13 +221,13 @@
         <input type="button" class="pop_sure_btn" style="width:65px;height:35px;background-color:#f9494c;color:#fff;margin:8px 20px 20px 460px;border:none;border-radius:5px;font-size:16px;" value="确认"/>
     </div>
 </div>
-<script src="{{asset('/js/jquery-1.11.3.js')}}"  xsdep="1"></script>
-<script src="{{asset('/js/bootstrap.js')}}"  xsdep="1"></script>
-<script src="{{asset('/js/xslib.js')}}"  xsdep="1"></script>
-<script src="{{asset('/js/laddress.js')}}"  xsdep="1"></script>
-<script src="{{asset('/js/passwordRefind.js')}}"  xsdep="1"></script>
-<script src="{{asset('/js/loaddata.js')}}"  xsdep="1"></script>
-<script src="{{asset('/js/usercenter.js')}}"  xsdep="1"></script>
+<script src="{{asset('/js/jquery-1.11.3.js')}}"  lava="1"></script>
+<script src="{{asset('/js/bootstrap.js')}}"  lava="1"></script>
+<script src="{{asset('/js/xslib.js')}}"  lava="1"></script>
+<script src="{{asset('/js/laddress.js')}}"  lava="1"></script>
+<script src="{{asset('/js/passwordRefind.js')}}"  lava="1"></script>
+<script src="{{asset('/js/loaddata.js')}}"  lava="1"></script>
+<script src="{{asset('/js/usercenter.js')}}"  lava="1"></script>
 
 <script>
     var g_cFindPwd = new CFindPwd();
