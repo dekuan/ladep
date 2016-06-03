@@ -835,37 +835,33 @@ class CBuild
 	private function _SetupConfigDatabase( $sReleaseDir, classes\CProject $cProject, callable $pfnCbFunc )
 	{
 		$cSetup	= new classes\CSetup();
-
 		return $cSetup->SetupConfigDatabase( $sReleaseDir, $cProject, $pfnCbFunc );
+	}
+	private function _SetupConfigSession( $sReleaseDir, classes\CProject $cProject, callable $pfnCbFunc )
+	{
+		$cSetup	= new classes\CSetup();
+		return $cSetup->SetupConfigSession( $sReleaseDir, $cProject, $pfnCbFunc );
 	}
 
 	private function _SetupHttpErrorsPage( $sReleaseDir, callable $pfnCbFunc )
 	{
 		$cSetup	= new classes\CSetup();
-
-		//	...
 		return $cSetup->SetupHttpErrorsPage( $sReleaseDir, $pfnCbFunc );
 	}
 
 	private function _CleanUpFilesBeforeComposerInstall( $sReleaseDir, callable $pfnCbFunc )
 	{
 		$cFile	= new classes\CFile();
-
-		//	...
 		return $cFile->CleanUpFilesBeforeComposerInstall( $sReleaseDir, $pfnCbFunc );
 	}
 	private function _CleanUpFilesAfterComposerInstall( $sReleaseDir, callable $pfnCbFunc )
 	{
 		$cFile	= new classes\CFile();
-
-		//	...
 		return $cFile->CleanUpFilesAfterComposerInstall( $sReleaseDir, $pfnCbFunc );
 	}
 	private function _ChangeFileModes( $sReleaseDir, callable $pfnCbFunc )
 	{
 		$cFile	= new classes\CFile();
-
-		//	...
 		return $cFile->ChangeLocalFileModes( $sReleaseDir, $pfnCbFunc );
 	}
 
