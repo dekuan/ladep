@@ -18,4 +18,3 @@ return
 	"error_chmod_file"		=> "Error in executing command chmod.",
 	"error_save_status"		=> "Error in saving status.",
 ];
-

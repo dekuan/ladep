@@ -10,6 +10,7 @@ return
 	//
 	'dir_release'			=> 'releases',
 	'dir_wwwroot'			=> 'wwwroot',
+	//	todo
 	'dir_projects'			=> '/etc/lava/project/production/',
 	'dir_logs'			=> '/etc/lava/logs/',
 	'ext_project'			=> '.lava',
@@ -30,6 +31,7 @@ return
 	//
 	//	status file
 	//
+	//	todo
 	'path_file_status'		=> '.lava',
 
 	//

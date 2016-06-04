@@ -205,25 +205,25 @@ class CBuild
 			//
 			//	setup config session as local default
 			//
-			if ( $bContinue )
-			{
-				$bContinue = false;
-				$pfnCbFunc( 'info', sprintf( "Setting up config/session.php as local" ) );
-				if ( $this->_SetupConfigSessionAsLocal( $sDirNew, $this->m_cProject, $pfnCbFunc ) )
-				{
-					$pfnCbFunc( "info", "config/session.php was set up as local successfully." );
-					$bContinue = true;
-				}
-				else
-				{
-					$sFormat	= libs\Lang::Get( "error_setup_session" );
-					$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
-					$pfnCbFunc( "error", $sErrorDesc );
-				}
-				$pfnCbFunc( "info", "" );
-				$pfnCbFunc( "info", "" );
-				$pfnCbFunc( "info", "" );
-			}
+//			if ( $bContinue )
+//			{
+//				$bContinue = false;
+//				$pfnCbFunc( 'info', sprintf( "Setting up config/session.php as local" ) );
+//				if ( $this->_SetupConfigSessionAsLocal( $sDirNew, $this->m_cProject, $pfnCbFunc ) )
+//				{
+//					$pfnCbFunc( "info", "config/session.php was set up as local successfully." );
+//					$bContinue = true;
+//				}
+//				else
+//				{
+//					$sFormat	= libs\Lang::Get( "error_setup_session" );
+//					$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
+//					$pfnCbFunc( "error", $sErrorDesc );
+//				}
+//				$pfnCbFunc( "info", "" );
+//				$pfnCbFunc( "info", "" );
+//				$pfnCbFunc( "info", "" );
+//			}
 
 
 			//
@@ -288,6 +288,29 @@ class CBuild
 				else
 				{
 					$sFormat	= libs\Lang::Get( "error_setup_database" );
+					$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
+					$pfnCbFunc( "error", $sErrorDesc );
+				}
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( "info", "" );
+			}
+
+			//
+			//	setup config session as production server
+			//
+			if ( $bContinue )
+			{
+				$bContinue = true;
+				$pfnCbFunc( 'info', sprintf( "Setting up config/session.php", __CLASS__, __FUNCTION__ ) );
+				if ( $this->_SetupConfigSession( $sDirNew, $this->m_cProject, $pfnCbFunc ) )
+				{
+					$pfnCbFunc( "info", "config/session.php was set up successfully." );
+					$bContinue = true;
+				}
+				else
+				{
+					$sFormat	= libs\Lang::Get( "error_setup_session" );
 					$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
 					$pfnCbFunc( "error", $sErrorDesc );
 				}
@@ -561,81 +584,11 @@ class CBuild
 	}
 	private function _CloneCode( $sUrl, $sVer, $sReleaseDir, callable $pfnCbFunc )
 	{
-		if ( ! is_string( $sUrl ) || 0 == strlen( $sUrl ) )
-		{
-			return false;
-		}
-		if ( ! is_string( $sVer ) || 0 == strlen( $sVer ) )
-		{
-			return false;
-		}
-
-		//	...
-		$bRet = false;
-
-		//	...
-		//	git checkout -b 1.0.0
-		$sCommand = sprintf( "git clone --branch \"%s\" \"%s\" \"%s\"", $sVer, $sUrl, $sReleaseDir );
-		if ( is_callable( $pfnCbFunc ) )
-		{
-			$pfnCbFunc( "info", $sCommand );
-		}
-
-		$cProcess	= new Process\Process( $sCommand );
-		$cProcess
-			->setTimeout( libs\Config::Get( 'cmd_timeout' ) )
-			->enableOutput()
-			->run( function( $sType, $sBuffer ) use ( $pfnCbFunc )
-			{
-				if ( Process\Process::OUT === $sType )
-				{
-					if ( is_callable( $pfnCbFunc ) )
-					{
-						$pfnCbFunc( "info", trim( $sBuffer ) );
-					}
-				}
-				else if ( Process\Process::ERR == $sType )
-				{
-					if ( is_callable( $pfnCbFunc ) )
-					{
-						$pfnCbFunc( "comment", trim( $sBuffer ) );
-					}
-				}
-				else
-				{
-					if ( is_callable( $pfnCbFunc ) )
-					{
-						$pfnCbFunc( "comment", trim( $sBuffer ) );
-					}
-				}
-
-				return true;
-			})
-		;
-
-		if ( $cProcess->isSuccessful() )
-		{
-			$sOutputStr	= $cProcess->getErrorOutput();
-			if ( strstr( $sOutputStr, "git clone successfully" ) )
-			{
-				$bRet = true;
-			}
-			else if ( strstr( $sOutputStr, "You are in 'detached HEAD' state." ) &&
-				strstr( $sOutputStr, "git checkout -b <new-branch-name>" ) )
-			{
-				$bRet = true;
-			}
-		}
-		else
-		{
-			if ( is_callable( $pfnCbFunc ) )
-			{
-				$pfnCbFunc( "error", $cProcess->getErrorOutput() );
-			}
-		}
-
-		return $bRet;
+		$cGit = new classes\CGit();
+		return $cGit->CloneCode( $sUrl, $sVer, $sReleaseDir, $pfnCbFunc );
 	}
+
+
 	private function _CreateNewEnv( $sReleaseDir, callable $pfnCbFunc )
 	{
 		$bRet	= false;
