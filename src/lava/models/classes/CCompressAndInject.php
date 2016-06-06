@@ -40,13 +40,13 @@ class CCompressAndInject
 		$sViewDir	= sprintf
 		(
 			"%s/%s",
-			libs\Lib::RTrimPath( libs\Lib::GetVersionDir( $sProjectName, $sVer ) ),
+			libs\Lib::RTrimPath( libs\Lib::GetLocalReleasedVersionDir( $sProjectName, $sVer ) ),
 			libs\Lib::LTrimPath( Config::Get( 'dir_la_resources_views' ) )
 		);
 		$sPublicDir	= sprintf
 		(
 			"%s/%s",
-			libs\Lib::RTrimPath( libs\Lib::GetVersionDir( $sProjectName, $sVer ) ),
+			libs\Lib::RTrimPath( libs\Lib::GetLocalReleasedVersionDir( $sProjectName, $sVer ) ),
 			libs\Lib::LTrimPath( Config::Get( 'dir_la_public' ) )
 		);
 

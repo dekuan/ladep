@@ -72,7 +72,7 @@ class CPush
 
 			//	...
 			$sErrorDesc	= '';
-			$sDirNew	= libs\Lib::GetVersionDir( $sProjectName, $sRepoVer );
+			$sDirNew	= libs\Lib::GetLocalReleasedVersionDir( $sProjectName, $sRepoVer );
 
 			//	...
 			if ( $this->_IsReadyStatus( $sDirNew, $pfnCbFunc ) )

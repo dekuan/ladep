@@ -21,7 +21,7 @@ class CCommandUpdate extends Command
 	{
 		$this
 			->setName( 'update' )
-			->setDescription( 'Updates lava to the latest version' )
+			->setDescription( 'Updates me to the latest version' )
 			->addOption( 'major', null, InputOption::VALUE_NONE, 'Allow major version update' )
 		;
 	}

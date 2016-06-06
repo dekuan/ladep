@@ -15,29 +15,57 @@ class CProjectFiles
 	{
 	}
 
-	public function ScanAll( $sDir, $sExtName = '.lava' )
+	//
+	//	scan files with specified extension from a directory recursively
+	//
+	public function ScanAll( $sDir, $arrExtName = [ 'lava' ] )
 	{
-		return $this->_ScanAllProjectFiles( $sDir, $sExtName );
+		return $this->_ScanAllProjectFiles( $sDir, $arrExtName );
 	}
 
 	////////////////////////////////////////////////////////////
 	//	Private
 	//
-	private function _ScanAllProjectFiles( $sDir, $sExtName = '.lava' )
+
+	//
+	//	scan files with specified extension from a directory recursively
+	//
+	private function _ScanAllProjectFiles( $sDir, $arrExtName = [ 'lava' ] )
 	{
 		//
-		//	sDir		- path of directory
-		//	sExtName	- extension name of project file
+		//	sDir		- [in] string,	path of directory
+		//	arrExtName	- [in] array,	extension name of project files
 		//	RETURN		- Array() / null
 		//
 		if ( ! is_string( $sDir ) || ! is_dir( $sDir ) )
 		{
 			return null;
 		}
-		if ( ! is_string( $sExtName ) || 0 == strlen( $sExtName ) )
+
+		if ( is_string( $arrExtName ) )
+		{
+			if ( strlen( $arrExtName ) > 0 )
+			{
+				//	convent it to array
+				$arrExtName = [ $arrExtName ];
+			}
+			else
+			{
+				return null;
+			}
+		}
+		else if ( is_array( $arrExtName ) )
+		{
+			if ( 0 == count( $arrExtName ) )
+			{
+				return null;
+			}
+		}
+		else
 		{
 			return null;
 		}
+
 
 		//	...
 		$arrRet = [];
@@ -57,7 +85,10 @@ class CProjectFiles
 					$sFFN = sprintf( "%s/%s", Lib::RTrimPath( $sDir ), $sFile );
 					if ( is_dir( $sFFN ) )
 					{
-						$arrSubFiles = $this->_ScanAllProjectFiles( $sFFN, $sExtName );
+						//
+						//	continue to scan the sub directory
+						//
+						$arrSubFiles = $this->_ScanAllProjectFiles( $sFFN, $arrExtName );
 						if ( is_array( $arrSubFiles ) && count( $arrSubFiles ) )
 						{
 							$arrRet = array_merge( $arrRet, $arrSubFiles );
@@ -65,10 +96,13 @@ class CProjectFiles
 					}
 					else
 					{
-						$nFileLen	= strlen( $sFile );
-						$nExtLen	= strlen( $sExtName );
-						$nRPos		= strrpos( $sFile, $sExtName );
-						if ( $nFileLen == $nRPos + $nExtLen )
+						//
+						//	picked up the files with corrected extension
+						//
+						$sExt = $this->_GetExtensionName( $sFile );
+						if ( is_string( $sExt ) &&
+							strlen( $sExt ) > 0 &&
+							in_array( $sExt, $arrExtName ) )
 						{
 							$arrRet[] = $sFFN;
 						}
@@ -81,10 +115,33 @@ class CProjectFiles
 		}
 		catch ( Exception $e )
 		{
-			//	throw
+			throw $e;
 		}
 
 		//	...
 		return $arrRet;
 	}
+
+	private function _GetExtensionName( $sFilename )
+	{
+		if ( ! is_string( $sFilename ) || 0 == strlen( $sFilename ) )
+		{
+			return '';
+		}
+
+		//	...
+		$sRet = '';
+
+		$arrPath = @ pathinfo( $sFilename );
+		if ( is_array( $arrPath ) &&
+			array_key_exists( 'extension', $arrPath ) &&
+			is_string( $arrPath[ 'extension' ] ) &&
+			strlen( $arrPath[ 'extension' ] ) > 0 )
+		{
+			$sRet = trim( $arrPath[ 'extension' ] );
+		}
+
+		return $sRet;
+	}
+
 }

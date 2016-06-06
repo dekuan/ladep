@@ -40,7 +40,7 @@ use dekuan\lava\command;
 //
 //	...
 //
-$application = new Application( 'xscn/xsdep', '@package_version@' );
+$application = new Application( 'dekuan/lava', '@package_version@' );
 $application->add( new command\CCommandBuild() );
 $application->add( new command\CCommandPush() );
 $application->add( new command\CCommandRollback() );

@@ -63,7 +63,7 @@ class CBuild
 			//	...
 			$bContinue	= false;
 			$sErrorDesc	= '';
-			$sDirNew	= libs\Lib::GetVersionDir( $sProjectName, $sRepoVer );
+			$sDirNew	= libs\Lib::GetLocalReleasedVersionDir( $sProjectName, $sRepoVer );
 
 
 			//
@@ -372,8 +372,8 @@ class CBuild
 
 
 		//	$bContinue	= true;
-		//	$sSrcDir	= libs\Lib::GetReleaseDir( $sProjectName ) . "/1.0.3-bak/";
-		//	$sDstDir	= libs\Lib::GetReleaseDir( $sProjectName ) . "/1.0.3/";
+		//	$sSrcDir	= libs\Lib::GetLocalReleaseDir( $sProjectName ) . "/1.0.3-bak/";
+		//	$sDstDir	= libs\Lib::GetLocalReleaseDir( $sProjectName ) . "/1.0.3/";
 		//	system( "rm -rf \"$sDstDir\" && cp -r \"$sSrcDir\" \"$sDstDir\"" );
 
 			//
@@ -493,7 +493,7 @@ class CBuild
 		$bRet		= false;
 		$bMkDirRelease	= false;
 		$bMkDirProject	= false;
-		$sDirNew	= libs\Lib::GetReleaseDir();
+		$sDirNew	= libs\Lib::GetLocalReleaseDir();
 		if ( is_dir( $sDirNew ) )
 		{
 			$bMkDirRelease	= true;
@@ -511,7 +511,7 @@ class CBuild
 			}
 
 			//	...
-			$sDirNew = libs\Lib::GetProjectDir( $sProjectName );
+			$sDirNew = libs\Lib::GetLocalReleasedProjectDir( $sProjectName );
 			if ( is_dir( $sDirNew ) )
 			{
 				$bMkDirProject	= true;
@@ -525,7 +525,7 @@ class CBuild
 			if ( $bMkDirProject )
 			{
 				//	...
-				$sDirNew = libs\Lib::GetVersionDir( $sProjectName, $sVer );
+				$sDirNew = libs\Lib::GetLocalReleasedVersionDir( $sProjectName, $sVer );
 				if ( is_dir( $sDirNew ) )
 				{
 					if ( is_callable( $pfnCbFunc ) )

@@ -39,7 +39,8 @@ class CMakeCompressed
 	//	RegEx list
 	//
 	//	lava="1"
-	const CONST_REGX_LADEP		= "/lava[ ]*=[ ]*[\"']{0,1}[ ]*1[ ]*[\"']{0,1}/i";
+	//
+	const CONST_REGX_LADEP		= "/lava|xsdep[ ]*=[ ]*[\"']{0,1}[ ]*1[ ]*[\"']{0,1}/i";
 
 	//	<script src="{{asset('/js/xslib.js')}}" lava="1"></script>
 	const CONST_REGX_SCRIPT		= "/<script.*?" .
@@ -51,6 +52,11 @@ class CMakeCompressed
 					"href[ ]*=[ ]*[\"']{0,1}[\{\{asset\(']*([^'\"]+)['\)\}\}]*[ ]*[\"']{0,1}.*?" .
 					"[\/]*>/i";
 
+	//
+	//	todo
+	//	todo
+	//	to fit lava and xsdep
+	//
 	const CONST_LABEL_COMPRESSED_SCRIPT	= "<script compressed=\"lava\">";
 	const CONST_LABEL_COMPRESSED_STYLE	= "<style compressed=\"lava\">";
 
