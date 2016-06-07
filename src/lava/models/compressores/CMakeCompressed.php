@@ -57,6 +57,9 @@ class CMakeCompressed
 	//	todo
 	//	to fit lava and xsdep
 	//
+	const CONST_LABEL_PROJECTVER_SCRIPT	= "<script project=\"%s\" version=\"%s\"></script>";
+	const CONST_LABEL_PROJECTVER_STYLE	= "<style project=\"%s\" version=\"%s\"></style>";
+
 	const CONST_LABEL_COMPRESSED_SCRIPT	= "<script compressed=\"lava\">";
 	const CONST_LABEL_COMPRESSED_STYLE	= "<style compressed=\"lava\">";
 
@@ -74,9 +77,11 @@ class CMakeCompressed
 	//	@ public
 	//	make compressed view
 	//
-	public function MakeCompressedView( $sViewFFN, $sWebRootDir, $bTrimLine, $arrOptions, Array & $arrReturn, callable $pfnCbFunc )
+	public function MakeCompressedView( $sProjectName, $sVer, $sViewFFN, $sWebRootDir, $bTrimLine, $arrOptions, Array & $arrReturn, callable $pfnCbFunc )
 	{
 		//
+		//	sProjectName	- [in] string	the project name
+		//	sVer		- [in] string	the version of project
 		//	sViewFFN	- [in] string	the full filename of view page
 		//	sWebRootDir	- [in] string	the full directory name of web root
 		//	sExtension	- [in] string	extension
@@ -92,6 +97,14 @@ class CMakeCompressed
 		//					'css'	=> [ 'all_in_one_ffn', 'compressed_ffn' ]
 		//				]
 		//
+		if ( ! is_string( $sProjectName ) || 0 == strlen( $sProjectName ) )
+		{
+			return CConst::ERROR_PARAMETER;
+		}
+		if ( ! is_string( $sVer ) || 0 == strlen( $sVer ) )
+		{
+			return CConst::ERROR_PARAMETER;
+		}
 		if ( ! is_string( $sViewFFN ) || ! is_file( $sViewFFN ) )
 		{
 			return CConst::ERROR_PARAMETER;
@@ -186,7 +199,15 @@ class CMakeCompressed
 				'js'	=> $sCompressedFFNJs,
 				'css'	=> $sCompressedFFNCss,
 			];
-		$nCall	= $this->_InjectCompressedIntoView( $sViewFFN, $bTrimLine, $arrCompressedFFN, $pfnCbFunc );
+		$nCall	= $this->_InjectCompressedIntoView
+		(
+			$sProjectName,
+			$sVer,
+			$sViewFFN,
+			$bTrimLine,
+			$arrCompressedFFN,
+			$pfnCbFunc
+		);
 		if ( CConst::ERROR_SUCCESS == $nCall )
 		{
 			$nRet = CConst::ERROR_SUCCESS;
@@ -480,8 +501,16 @@ class CMakeCompressed
 		return $nRet;
 	}
 
-	private function _InjectCompressedIntoView( $sViewFFN, $bTrimLine, $arrCompressedFFN, callable $pfnCbFunc )
+	private function _InjectCompressedIntoView( $sProjectName, $sVer, $sViewFFN, $bTrimLine, $arrCompressedFFN, callable $pfnCbFunc )
 	{
+		if ( ! is_string( $sProjectName ) || 0 == strlen( $sProjectName ) )
+		{
+			return CConst::ERROR_PARAMETER;
+		}
+		if ( ! is_string( $sVer ) || 0 == strlen( $sVer ) )
+		{
+			return CConst::ERROR_PARAMETER;
+		}
 		if ( ! is_string( $sViewFFN ) || ! is_file( $sViewFFN ) )
 		{
 			return CConst::ERROR_PARAMETER;
@@ -567,7 +596,8 @@ class CMakeCompressed
 								$sCnt	= @ file_get_contents( $sCompressedFFNJs );
 
 								//	...
-								$sLineNew .= ( self::CONST_LABEL_COMPRESSED_SCRIPT . $sCnt . "</script>\n" );
+								$sLineNew .= ( $this->_GetScriptProjectVersion( $sProjectName, $sVer ) . "\r\n" .
+										self::CONST_LABEL_COMPRESSED_SCRIPT . $sCnt . "</script>\n" );
 							}
 						}
 						else if ( $bMatchedCss )
@@ -586,7 +616,8 @@ class CMakeCompressed
 								$sCnt	= @ file_get_contents( $sCompressedFFNCss );
 
 								//	...
-								$sLineNew .= ( self::CONST_LABEL_COMPRESSED_STYLE . $sCnt . "</style>\n" );
+								$sLineNew .= ( $this->_GetStyleProjectVersion( $sProjectName, $sVer ) . "\r\n" .
+										self::CONST_LABEL_COMPRESSED_STYLE . $sCnt . "</style>\n" );
 							}
 						}
 						else
@@ -636,7 +667,6 @@ class CMakeCompressed
 		if ( ! is_string( $sCompressedFFN ) || ! is_file( $sCompressedFFN ) )
 		{
 			return false;
-
 		}
 
 		//	...
@@ -992,4 +1022,24 @@ class CMakeCompressed
 
 		return $bRet;
 	}
+
+	private function _GetScriptProjectVersion( $sProjectName, $sVer )
+	{
+		return sprintf
+		(
+			self::CONST_LABEL_PROJECTVER_SCRIPT,
+			( is_string( $sProjectName ) ? trim( $sProjectName ) : '' ),
+			( is_string( $sVer ) ? trim( $sVer ) : '' )
+		);
+	}
+	private function _GetStyleProjectVersion( $sProjectName, $sVer )
+	{
+		return sprintf
+		(
+			self::CONST_LABEL_PROJECTVER_STYLE,
+			( is_string( $sProjectName ) ? trim( $sProjectName ) : '' ),
+			( is_string( $sVer ) ? trim( $sVer ) : '' )
+		);
+	}
+
 }
