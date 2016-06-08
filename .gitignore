@@ -9,7 +9,7 @@ composer.lock
 box.json
 private.key
 lava.phar.pubkey
-lava.phar
+/lava.phar
 yuicompressor*
 
 xsdepdata
