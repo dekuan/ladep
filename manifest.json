@@ -1,8 +1,8 @@
 [
 	{
 		"name"		: "lava.phar",
-		"sha1"		: "22082cbf009ff6484403a5b815ae8d94",
+		"sha1"		: "d265174743fb2f4cbe989e7985e6386d",
 		"url"		: "https://github.com/dekuan/lava/raw/1.0.1/lava.phar",
-		"version"	: "1.0.8"
+		"version"	: "1.0.1"
 	}
 ]
