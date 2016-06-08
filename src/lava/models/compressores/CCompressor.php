@@ -128,7 +128,7 @@ class CCompressor
 		$sRet = '';
 
 		//	...
-		$sWorkingRootDir	= libs\Lib::GetWorkingRootDir();
+		$sWorkingRootDir	= libs\Lib::GetLocalWorkingRootDir();
 		$sWorkingJarFFN		= sprintf( "%s/%s", libs\Lib::RTrimPath( $sWorkingRootDir ), $sFilename );
 		if ( is_file( $sWorkingJarFFN ) )
 		{

@@ -40,7 +40,7 @@ class CStatus
 		*/
 
 		//	...
-		$sFullFilename	= $this->_GetFullConfigFilename( $sReleaseDir );
+		$sFullFilename	= $this->_GetFullStatusFilename( $sReleaseDir );
 		$arrData	= [];
 		if ( is_string( $sFullFilename ) && is_file( $sFullFilename ) )
 		{
@@ -105,7 +105,7 @@ class CStatus
 		$arrData[ self::KEY_READY ] = ( $bReady ? 1 : 0 );
 
 		//	...
-		$sFullFilename	= $this->_GetFullConfigFilename( $sReleaseDir );
+		$sFullFilename	= $this->_GetFullStatusFilename( $sReleaseDir );
 		$nSaved		= @ file_put_contents( $sFullFilename, @ json_encode( $arrData ) );
 		if ( false !== $nSaved && $nSaved > 0 )
 		{
@@ -122,13 +122,18 @@ class CStatus
 	////////////////////////////////////////////////////////////////////////////////
 	//	Private
 	//
-	private function _GetFullConfigFilename( $sReleaseDir )
+	private function _GetFullStatusFilename( $sReleaseDir )
 	{
 		if ( ! is_string( $sReleaseDir ) || ! is_dir( $sReleaseDir ) )
 		{
 			return '';
 		}
 
-		return sprintf( "%s/%s", libs\Lib::RTrimPath( $sReleaseDir ), libs\Config::Get( 'path_file_status' ) );
+		return sprintf
+		(
+			"%s/%s",
+			libs\Lib::RTrimPath( $sReleaseDir ),
+			libs\Lib::TrimPath( libs\Config::Get( 'path_file_status' ) )
+		);
 	}
 }

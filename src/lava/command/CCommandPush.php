@@ -26,6 +26,7 @@ class CCommandPush extends Command
 			->setDescription('Upload application to server and release it.')
 			->setDefinition
 			([
+				new InputOption('last', null, InputOption::VALUE_NONE, 'Automatically obtain the last tag from remote repository.'),
 				new Input\InputArgument( 'project_config', Input\InputArgument::REQUIRED, 'Required full path of project configuration file, e.g. /var/www/pay/pay.xs.cn.json' )
 			])
 			->setHelp(<<<EOT
@@ -53,6 +54,7 @@ EOT
 		$nErrorId	= $cPush->Run
 		(
 			[
+				'last'			=> $cInput->getOption( 'last' ),
 				'project_config'	=> $cInput->getArgument( 'project_config' ),
 			],
 			function( $sType, $vBuffer ) use ( $cOutput )

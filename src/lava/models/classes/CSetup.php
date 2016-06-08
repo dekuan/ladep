@@ -4,7 +4,7 @@ namespace dekuan\lava\models\classes;
 
 use xscn\xsconst;
 use dekuan\lava\libs;
-
+use dekuan\lava\constants;
 
 
 /**
@@ -21,22 +21,32 @@ class CSetup
 
 	public function SetupConfigApp( $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
 	{
-		//	...
-		return $this->_SetupConfigApp( $sReleaseDir, $cProject, $pfnCbFunc );
+		return ( xsconst\CConst::ERROR_SUCCESS == $this->_SetupConfigFile( 'app.php', $sReleaseDir, $cProject, $pfnCbFunc ) );
 	}
 	public function SetupConfigDatabase( $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
 	{
-		//	...
-		return $this->_SetupConfigDatabase( $sReleaseDir, $cProject, $pfnCbFunc );
+		return ( xsconst\CConst::ERROR_SUCCESS == $this->_SetupConfigFile( 'database.php', $sReleaseDir, $cProject, $pfnCbFunc ) );
 	}
+	public function SetupConfigSession( $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
+	{
+		$bRet	= false;
+		$nCall	= $this->_SetupConfigFile( 'session.php', $sReleaseDir, $cProject, $pfnCbFunc );
+		if ( xsconst\CConst::ERROR_SUCCESS == $nCall ||
+			constants\CUConsts::CONST_ERROR_FAILED_COPY_FILE == $nCall )
+		{
+			$bRet = true;
+		}
+
+		return $bRet;
+	}
+
+
 	public function SetupConfigDatabaseAsLocal( $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
 	{
-		//	...
 		return $this->_SetupConfigDatabaseAsLocal( $sReleaseDir, $cProject, $pfnCbFunc );
 	}
 	public function SetupConfigSessionAsLocal( $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
 	{
-		//	...
 		return $this->_SetupConfigSessionAsLocal( $sReleaseDir, $cProject, $pfnCbFunc );
 	}
 	public function SetupHttpErrorsPage( $sReleaseDir, callable $pfnCbFunc = null )
@@ -44,17 +54,10 @@ class CSetup
 		return $this->_SetupHttpErrorsPage( $sReleaseDir, $pfnCbFunc );
 	}
 
+
 	////////////////////////////////////////////////////////////////////////////////
 	//	Private
 	//
-	private function _SetupConfigApp( $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
-	{
-		return $this->_SetupConfigFile( 'app.php', $sReleaseDir, $cProject, $pfnCbFunc );
-	}
-	private function _SetupConfigDatabase( $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
-	{
-		return $this->_SetupConfigFile( 'database.php', $sReleaseDir, $cProject, $pfnCbFunc );
-	}
 	private function _SetupConfigDatabaseAsLocal( $sReleaseDir, $cProject, $pfnCbFunc )
 	{
 		//	...
@@ -100,20 +103,21 @@ class CSetup
 	{
 		if ( ! is_string( $sConfigFilename ) || 0 == strlen( $sConfigFilename ) )
 		{
-			return false;
+			return xsconst\CConst::ERROR_PARAMETER;
 		}
 		if ( ! is_string( $sReleaseDir ) || ! is_dir( $sReleaseDir ) )
 		{
-			return false;
+			return xsconst\CConst::ERROR_PARAMETER;
 		}
 		if ( ! $cProject instanceof CProject )
 		{
-			return false;
+			return xsconst\CConst::ERROR_PARAMETER;
 		}
 
 		//	...
-		$bRet = false;
+		$nRet = xsconst\CConst::ERROR_UNKNOWN;
 
+		//	...
 		$sName		= $cProject->GetName();
 		$arrSrvConfig	= $cProject->GetServerConfig();
 
@@ -130,27 +134,52 @@ class CSetup
 				{
 					$sSrc	= sprintf( "%s/%s", $sUrl, $sConfigFilename );
 					$sDst	= sprintf( "%s/config/%s", $sReleaseDir, $sConfigFilename );
-					if ( copy( $sSrc, $sDst ) )
+					if ( is_file( $sSrc ) )
 					{
-						$bRet = true;
+						if ( copy( $sSrc, $sDst ) )
+						{
+							//
+							//	copy successfully
+							//
+							$nRet = xsconst\CConst::ERROR_SUCCESS;
+						}
+						else
+						{
+							$nRet = constants\CUConsts::CONST_ERROR_FAILED_COPY_FILE;
+						}
+					}
+					else
+					{
+						$nRet = constants\CUConsts::CONST_ERROR_FILE_NOT_EXIST;
 					}
 				}
 				else if ( 0 == strcasecmp( 'ssh', $sType ) )
 				{
-
+					//
+					//	todo
+					//	copy files via ssh
+					//
 				}
 			}
 			else
 			{
-				echo "# error in arrSrvConfig\r\n";
+				$nRet = constants\CUConsts::CONST_ERROR_CONFIG;
+				if ( is_callable( $pfnCbFunc ) )
+				{
+					$pfnCbFunc( "comment", "\t\t  # error in arrSrvConfig" );
+				}
 			}
 		}
 		else
 		{
-			echo "# error in name\r\n";
+			$nRet = constants\CUConsts::CONST_ERROR_CONFIG;
+			if ( is_callable( $pfnCbFunc ) )
+			{
+				$pfnCbFunc( "comment", "\t\t  # error in name" );
+			}
 		}
 
-		return $bRet;
+		return $nRet;
 	}
 
 	private function _SetupHttpErrorsPage( $sReleaseDir, callable $pfnCbFunc = null )

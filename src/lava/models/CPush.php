@@ -36,6 +36,8 @@ class CPush
 		$nRet		= -1;	//	xsconst\CConst::ERROR_UNKNOWN;
 		$sErrorDesc	= '';
 		$sErrorPath	= '';
+		$cGit		= new classes\CGit();
+
 
 		if ( ! is_callable( $pfnCbFunc ) )
 		{
@@ -51,15 +53,15 @@ class CPush
 		}
 
 		//	...
+		$bObtainLastTag	= array_key_exists( 'last', $arrParameter ) ? boolval( $arrParameter['last'] ) : false;
+
+		//	...
 		$pfnCbFunc( 'sinfo', sprintf( "READ\t\t: %s", $sProjectConfig ) );
 		$nErrorId = $this->m_cProject->Load( $sProjectConfig, $sErrorPath );
 		if ( 0 == $nErrorId )
 		{
 			$pfnCbFunc( 'sinfo', "\t\t\t[OK]" );
 			$pfnCbFunc( 'info', "" );
-
-			//	checking
-			$pfnCbFunc( 'sinfo', sprintf( "CHECK\t\t: if the project is ready to be released." ) );
 
 			//	...
 			$sProjectName		= $this->m_cProject->GetName();
@@ -70,9 +72,28 @@ class CPush
 			$arrSrvListWithKey	= $this->m_cProject->GetServerListWithKey();
 			$sSrvListString		= $this->m_cProject->GetServerHostListString();
 
+			if ( $bObtainLastTag )
+			{
+				$pfnCbFunc( 'sinfo', sprintf( "LAST\t\t: Try to obtain the last tag from remote repository ..." ) );
+				$sRemoteLastTag	= $cGit->GetLastTagFromRemoteRepository( $sRepoUrl, null );
+				if ( is_string( $sRemoteLastTag ) && strlen( $sRemoteLastTag ) )
+				{
+					$pfnCbFunc( 'sinfo', "\t\t\t[$sRemoteLastTag]" );
+					$sRepoVer = $sRemoteLastTag;
+				}
+				else
+				{
+					$pfnCbFunc( 'sinfo', "\t\t\tERROR, use [$sRepoVer]" );
+				}
+				$pfnCbFunc( 'info', "" );
+			}
+
 			//	...
 			$sErrorDesc	= '';
-			$sDirNew	= libs\Lib::GetVersionDir( $sProjectName, $sRepoVer );
+			$sDirNew	= libs\Lib::GetLocalReleasedVersionDir( $sProjectName, $sRepoVer );
+
+			//	checking
+			$pfnCbFunc( 'sinfo', sprintf( "CHECK\t\t: if the project is ready to be released." ) );
 
 			//	...
 			if ( $this->_IsReadyStatus( $sDirNew, $pfnCbFunc ) )
@@ -108,22 +129,26 @@ class CPush
 						}
 						else
 						{
+							$pfnCbFunc( "info", "" );
 							$pfnCbFunc( 'comment', "# Failed to upload files, in _SyncLocalToRemote" );
 						}
 					}
 					else
 					{
+						$pfnCbFunc( "info", "" );
 						$pfnCbFunc( 'comment', "# version [$sRepoVer] already exists on server [$sSrvListString], please push a fresh one." );
 					}
 				}
 				else
 				{
+					$pfnCbFunc( "info", "" );
 					$pfnCbFunc( 'comment', "# Okay, We have canceled the job." );
 				}
 			}
 			else
 			{
-				$pfnCbFunc( 'scomment', "Project is not ready to be released, please make sure you run build command correctly." );
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( 'comment', "Project is not ready to be released, please make sure you run build command correctly." );
 			}
 		}
 		else if ( -100002 == $nErrorId )

@@ -36,6 +36,8 @@ class CBuild
 		$nRet		= -1;	//	xsconst\CConst::ERROR_UNKNOWN;
 		$sErrorDesc	= '';
 		$sErrorPath	= '';
+		$cGit		= new classes\CGit();
+
 
 		if ( ! is_callable( $pfnCbFunc ) )
 		{
@@ -44,6 +46,7 @@ class CBuild
 
 		//	...
 		$sProjectConfig	= array_key_exists( 'project_config', $arrParameter ) ? $arrParameter['project_config'] : '';
+		$bObtainLastTag	= array_key_exists( 'last', $arrParameter ) ? boolval( $arrParameter['last'] ) : false;
 		$bNoCompressJs	= array_key_exists( 'no-compress-js', $arrParameter ) ? boolval( $arrParameter['no-compress-js'] ) : false;
 		$bNoCompressCss	= array_key_exists( 'no-compress-css', $arrParameter ) ? boolval( $arrParameter['no-compress-css'] ) : false;
 
@@ -60,10 +63,25 @@ class CBuild
 			$arrSrvConfig		= $this->m_cProject->GetServerConfig();
 			$arrSrvList		= $this->m_cProject->GetServerList();
 
+			if ( $bObtainLastTag )
+			{
+				$pfnCbFunc( "info", "Try to obtain the last tag from remote repository" );
+				$sRemoteLastTag	= $cGit->GetLastTagFromRemoteRepository( $sRepoUrl, $pfnCbFunc );
+				if ( is_string( $sRemoteLastTag ) && strlen( $sRemoteLastTag ) )
+				{
+					$pfnCbFunc( "info", "\t\t  obtain the last tag [$sRemoteLastTag] successfully." );
+					$sRepoVer = $sRemoteLastTag;
+				}
+				else
+				{
+					$pfnCbFunc( "comment", "\t\t  #Failed to obtain the last tag, still use the tag [$sRepoVer] from config." );
+				}
+			}
+
 			//	...
 			$bContinue	= false;
 			$sErrorDesc	= '';
-			$sDirNew	= libs\Lib::GetVersionDir( $sProjectName, $sRepoVer );
+			$sDirNew	= libs\Lib::GetLocalReleasedVersionDir( $sProjectName, $sRepoVer );
 
 
 			//
@@ -205,25 +223,25 @@ class CBuild
 			//
 			//	setup config session as local default
 			//
-			if ( $bContinue )
-			{
-				$bContinue = false;
-				$pfnCbFunc( 'info', sprintf( "Setting up config/session.php as local" ) );
-				if ( $this->_SetupConfigSessionAsLocal( $sDirNew, $this->m_cProject, $pfnCbFunc ) )
-				{
-					$pfnCbFunc( "info", "config/session.php was set up as local successfully." );
-					$bContinue = true;
-				}
-				else
-				{
-					$sFormat	= libs\Lang::Get( "error_setup_session" );
-					$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
-					$pfnCbFunc( "error", $sErrorDesc );
-				}
-				$pfnCbFunc( "info", "" );
-				$pfnCbFunc( "info", "" );
-				$pfnCbFunc( "info", "" );
-			}
+//			if ( $bContinue )
+//			{
+//				$bContinue = false;
+//				$pfnCbFunc( 'info', sprintf( "Setting up config/session.php as local" ) );
+//				if ( $this->_SetupConfigSessionAsLocal( $sDirNew, $this->m_cProject, $pfnCbFunc ) )
+//				{
+//					$pfnCbFunc( "info", "config/session.php was set up as local successfully." );
+//					$bContinue = true;
+//				}
+//				else
+//				{
+//					$sFormat	= libs\Lang::Get( "error_setup_session" );
+//					$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
+//					$pfnCbFunc( "error", $sErrorDesc );
+//				}
+//				$pfnCbFunc( "info", "" );
+//				$pfnCbFunc( "info", "" );
+//				$pfnCbFunc( "info", "" );
+//			}
 
 
 			//
@@ -296,6 +314,29 @@ class CBuild
 				$pfnCbFunc( "info", "" );
 			}
 
+			//
+			//	setup config session as production server
+			//
+			if ( $bContinue )
+			{
+				$bContinue = true;
+				$pfnCbFunc( 'info', sprintf( "Setting up config/session.php", __CLASS__, __FUNCTION__ ) );
+				if ( $this->_SetupConfigSession( $sDirNew, $this->m_cProject, $pfnCbFunc ) )
+				{
+					$pfnCbFunc( "info", "config/session.php was set up successfully." );
+					$bContinue = true;
+				}
+				else
+				{
+					$sFormat	= libs\Lang::Get( "error_setup_session" );
+					$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
+					$pfnCbFunc( "error", $sErrorDesc );
+				}
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( "info", "" );
+			}
+
 
 			//
 			//	setup http error pages
@@ -349,8 +390,8 @@ class CBuild
 
 
 		//	$bContinue	= true;
-		//	$sSrcDir	= libs\Lib::GetReleaseDir( $sProjectName ) . "/1.0.3-bak/";
-		//	$sDstDir	= libs\Lib::GetReleaseDir( $sProjectName ) . "/1.0.3/";
+		//	$sSrcDir	= libs\Lib::GetLocalReleaseDir( $sProjectName ) . "/1.0.3-bak/";
+		//	$sDstDir	= libs\Lib::GetLocalReleaseDir( $sProjectName ) . "/1.0.3/";
 		//	system( "rm -rf \"$sDstDir\" && cp -r \"$sSrcDir\" \"$sDstDir\"" );
 
 			//
@@ -470,7 +511,7 @@ class CBuild
 		$bRet		= false;
 		$bMkDirRelease	= false;
 		$bMkDirProject	= false;
-		$sDirNew	= libs\Lib::GetReleaseDir();
+		$sDirNew	= libs\Lib::GetLocalReleaseDir();
 		if ( is_dir( $sDirNew ) )
 		{
 			$bMkDirRelease	= true;
@@ -488,7 +529,7 @@ class CBuild
 			}
 
 			//	...
-			$sDirNew = libs\Lib::GetProjectDir( $sProjectName );
+			$sDirNew = libs\Lib::GetLocalReleasedProjectDir( $sProjectName );
 			if ( is_dir( $sDirNew ) )
 			{
 				$bMkDirProject	= true;
@@ -502,7 +543,7 @@ class CBuild
 			if ( $bMkDirProject )
 			{
 				//	...
-				$sDirNew = libs\Lib::GetVersionDir( $sProjectName, $sVer );
+				$sDirNew = libs\Lib::GetLocalReleasedVersionDir( $sProjectName, $sVer );
 				if ( is_dir( $sDirNew ) )
 				{
 					if ( is_callable( $pfnCbFunc ) )
@@ -561,81 +602,11 @@ class CBuild
 	}
 	private function _CloneCode( $sUrl, $sVer, $sReleaseDir, callable $pfnCbFunc )
 	{
-		if ( ! is_string( $sUrl ) || 0 == strlen( $sUrl ) )
-		{
-			return false;
-		}
-		if ( ! is_string( $sVer ) || 0 == strlen( $sVer ) )
-		{
-			return false;
-		}
-
-		//	...
-		$bRet = false;
-
-		//	...
-		//	git checkout -b 1.0.0
-		$sCommand = sprintf( "git clone --branch \"%s\" \"%s\" \"%s\"", $sVer, $sUrl, $sReleaseDir );
-		if ( is_callable( $pfnCbFunc ) )
-		{
-			$pfnCbFunc( "info", $sCommand );
-		}
-
-		$cProcess	= new Process\Process( $sCommand );
-		$cProcess
-			->setTimeout( libs\Config::Get( 'cmd_timeout' ) )
-			->enableOutput()
-			->run( function( $sType, $sBuffer ) use ( $pfnCbFunc )
-			{
-				if ( Process\Process::OUT === $sType )
-				{
-					if ( is_callable( $pfnCbFunc ) )
-					{
-						$pfnCbFunc( "info", trim( $sBuffer ) );
-					}
-				}
-				else if ( Process\Process::ERR == $sType )
-				{
-					if ( is_callable( $pfnCbFunc ) )
-					{
-						$pfnCbFunc( "comment", trim( $sBuffer ) );
-					}
-				}
-				else
-				{
-					if ( is_callable( $pfnCbFunc ) )
-					{
-						$pfnCbFunc( "comment", trim( $sBuffer ) );
-					}
-				}
-
-				return true;
-			})
-		;
-
-		if ( $cProcess->isSuccessful() )
-		{
-			$sOutputStr	= $cProcess->getErrorOutput();
-			if ( strstr( $sOutputStr, "git clone successfully" ) )
-			{
-				$bRet = true;
-			}
-			else if ( strstr( $sOutputStr, "You are in 'detached HEAD' state." ) &&
-				strstr( $sOutputStr, "git checkout -b <new-branch-name>" ) )
-			{
-				$bRet = true;
-			}
-		}
-		else
-		{
-			if ( is_callable( $pfnCbFunc ) )
-			{
-				$pfnCbFunc( "error", $cProcess->getErrorOutput() );
-			}
-		}
-
-		return $bRet;
+		$cGit = new classes\CGit();
+		return $cGit->CloneCode( $sUrl, $sVer, $sReleaseDir, $pfnCbFunc );
 	}
+
+
 	private function _CreateNewEnv( $sReleaseDir, callable $pfnCbFunc )
 	{
 		$bRet	= false;
@@ -835,37 +806,33 @@ class CBuild
 	private function _SetupConfigDatabase( $sReleaseDir, classes\CProject $cProject, callable $pfnCbFunc )
 	{
 		$cSetup	= new classes\CSetup();
-
 		return $cSetup->SetupConfigDatabase( $sReleaseDir, $cProject, $pfnCbFunc );
+	}
+	private function _SetupConfigSession( $sReleaseDir, classes\CProject $cProject, callable $pfnCbFunc )
+	{
+		$cSetup	= new classes\CSetup();
+		return $cSetup->SetupConfigSession( $sReleaseDir, $cProject, $pfnCbFunc );
 	}
 
 	private function _SetupHttpErrorsPage( $sReleaseDir, callable $pfnCbFunc )
 	{
 		$cSetup	= new classes\CSetup();
-
-		//	...
 		return $cSetup->SetupHttpErrorsPage( $sReleaseDir, $pfnCbFunc );
 	}
 
 	private function _CleanUpFilesBeforeComposerInstall( $sReleaseDir, callable $pfnCbFunc )
 	{
 		$cFile	= new classes\CFile();
-
-		//	...
 		return $cFile->CleanUpFilesBeforeComposerInstall( $sReleaseDir, $pfnCbFunc );
 	}
 	private function _CleanUpFilesAfterComposerInstall( $sReleaseDir, callable $pfnCbFunc )
 	{
 		$cFile	= new classes\CFile();
-
-		//	...
 		return $cFile->CleanUpFilesAfterComposerInstall( $sReleaseDir, $pfnCbFunc );
 	}
 	private function _ChangeFileModes( $sReleaseDir, callable $pfnCbFunc )
 	{
 		$cFile	= new classes\CFile();
-
-		//	...
 		return $cFile->ChangeLocalFileModes( $sReleaseDir, $pfnCbFunc );
 	}
 

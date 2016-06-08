@@ -14,14 +14,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CCommandUpdate extends Command
 {
-	const MANIFEST_FILE = 'http://gitlab.corp.xs.cn/composers/lava/raw/master/manifest.json';
-
+	const MANIFEST_FILE = 'https://github.com/dekuan/lava/raw/master/manifest.json';
 
 	protected function configure()
 	{
 		$this
 			->setName( 'update' )
-			->setDescription( 'Updates lava to the latest version' )
+			->setDescription( 'Updates me to the latest version' )
 			->addOption( 'major', null, InputOption::VALUE_NONE, 'Allow major version update' )
 		;
 	}
@@ -34,7 +33,7 @@ class CCommandUpdate extends Command
 
 		try
 		{
-			$cManager = new Manager(Manifest::loadFile(self::MANIFEST_FILE));
+			$cManager = new Manager( Manifest::loadFile( self::MANIFEST_FILE ) );
 		}
 		catch ( FileException $e )
 		{

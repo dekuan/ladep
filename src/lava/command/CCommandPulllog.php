@@ -33,8 +33,8 @@ Pull laravel logs of all projects to local.
 
 Steps:
 
-1, By default, lava pull logs of all projects to local.
-2, lava will pull log of specified project.
+1, By default, we will pull logs of all projects to local.
+2, we will pull log of specified project.
 
 EOT
 			)

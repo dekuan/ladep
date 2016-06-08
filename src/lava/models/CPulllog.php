@@ -48,7 +48,7 @@ class CPulllog
 		//	...
 		$cSSHCmdPL	= new classes\CSSHCmdPullLogs();
 
-		$sLogsDir	= libs\Config::Get( 'dir_logs' );
+		$sLogsDir	= libs\Lib::GetLocalLogsDir();
 		$arrServerList	= $this->_ScanAllServerList( $sProjectConfig );
 
 		if ( is_array( $arrServerList ) && count( $arrServerList ) > 0 )
@@ -125,10 +125,10 @@ class CPulllog
 		{
 			$cPjFiles	= new classes\CProjectFiles();
 
-			$sProjectDir	= libs\Config::Get( 'dir_projects' );
-			$sProjectExt	= libs\Config::Get( 'ext_project' );
+			$sProjectDir	= libs\Lib::GetLocalProjectsDir();
+			$arrProjectExts	= libs\Lib::GetLocalProjectsExtensions();
 
-			$arrFiles	= $cPjFiles->ScanAll( $sProjectDir, $sProjectExt );
+			$arrFiles	= $cPjFiles->ScanAll( $sProjectDir, $arrProjectExts );
 			if ( is_array( $arrFiles ) && count( $arrFiles ) )
 			{
 				foreach ( $arrFiles as $sFullFilename )

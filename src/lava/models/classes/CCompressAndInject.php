@@ -40,13 +40,13 @@ class CCompressAndInject
 		$sViewDir	= sprintf
 		(
 			"%s/%s",
-			libs\Lib::RTrimPath( libs\Lib::GetVersionDir( $sProjectName, $sVer ) ),
+			libs\Lib::RTrimPath( libs\Lib::GetLocalReleasedVersionDir( $sProjectName, $sVer ) ),
 			libs\Lib::LTrimPath( Config::Get( 'dir_la_resources_views' ) )
 		);
 		$sPublicDir	= sprintf
 		(
 			"%s/%s",
-			libs\Lib::RTrimPath( libs\Lib::GetVersionDir( $sProjectName, $sVer ) ),
+			libs\Lib::RTrimPath( libs\Lib::GetLocalReleasedVersionDir( $sProjectName, $sVer ) ),
 			libs\Lib::LTrimPath( Config::Get( 'dir_la_public' ) )
 		);
 
@@ -70,7 +70,15 @@ class CCompressAndInject
 					$pfnCbFunc( 'info', "" );
 					foreach ( $arrFiles as $sViewFFN )
 					{
-						$bRet &= $this->_CreateCompressedView( $sViewFFN, $sPublicDir, $arrOptions, $pfnCbFunc );
+						$bRet &= $this->_CreateCompressedView
+						(
+							$sProjectName,
+							$sVer,
+							$sViewFFN,
+							$sPublicDir,
+							$arrOptions,
+							$pfnCbFunc
+						);
 					}
 				}
 			}
@@ -88,8 +96,16 @@ class CCompressAndInject
 	}
 
 
-	private function _CreateCompressedView( $sViewFullFilename, $sWebRootDir, $arrOptions, callable $pfnCbFunc )
+	private function _CreateCompressedView( $sProjectName, $sVer, $sViewFullFilename, $sWebRootDir, $arrOptions, callable $pfnCbFunc )
 	{
+		if ( ! is_string( $sProjectName ) || 0 == strlen( $sProjectName ) )
+		{
+			return false;
+		}
+		if ( ! is_string( $sVer ) || 0 == strlen( $sVer ) )
+		{
+			return false;
+		}
 		if ( ! is_callable( $pfnCbFunc ) )
 		{
 			return false;
@@ -109,6 +125,8 @@ class CCompressAndInject
 		$arrMakeReturn	= [];
 		$nCompressed	= $cCompressor->MakeCompressedView
 					(
+						$sProjectName,
+						$sVer,
 						$sViewFullFilename,
 						$sWebRootDir,
 						false,

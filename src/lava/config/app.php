@@ -3,19 +3,26 @@
 return
 [
 	'debug'				=> true,
-	'langcode'			=> 'chs',
+	'langcode'			=> 'usa',
 
 	//
-	//	directory
+	//	local directory
 	//
 	'dir_release'			=> 'releases',
 	'dir_wwwroot'			=> 'wwwroot',
-	'dir_projects'			=> '/etc/lava/project/production/',
-	'dir_logs'			=> '/etc/lava/logs/',
-	'ext_project'			=> '.lava',
+	'dir_projects'			=> 'project',
+	'dir_logs'			=> 'logs',
 
+	//	supported extensions
+	'ext_project'			=> [ 'lava', 'xsdep' ],
+
+
+	//
+	//	laravel directory
+	//
 	'dir_la_resources_views'	=> '/resources/views/',
 	'dir_la_public'			=> '/public/',
+
 
 	//
 	//	split char
@@ -30,7 +37,7 @@ return
 	//
 	//	status file
 	//
-	'path_file_status'		=> '.lava',
+	'path_file_status'		=> '.lavastatus',
 
 	//
 	//	.env file

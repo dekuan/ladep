@@ -15,35 +15,11 @@ class Lib
 			false !== filter_var( $sUrl, FILTER_VALIDATE_URL ) );
 	}
 
-	static function GetWorkingRootDir()
-	{
-		return getcwd();
-	}
-	static function GetReleaseDir()
-	{
-		return sprintf( "%s/%s/", self::RTrimPath( self::GetWorkingRootDir() ), Config::Get( 'dir_release' ) );
-	}
-	static function GetProjectDir( $sProjectName )
-	{
-		if ( ! is_string( $sProjectName ) || 0 == strlen( $sProjectName ) )
-		{
-			return '';
-		}
-		return sprintf( "%s/%s/", self::RTrimPath( self::GetReleaseDir() ), self::RTrimPath( $sProjectName ) );
-	}
-	static function GetVersionDir( $sProjectName, $sVer )
-	{
-		if ( ! is_string( $sProjectName ) || 0 == strlen( $sProjectName ) )
-		{
-			return '';
-		}
-		if ( ! is_string( $sVer ) || 0 == strlen( $sVer ) )
-		{
-			return '';
-		}
-		return sprintf( "%s/%s/", self::RTrimPath( self::GetProjectDir( $sProjectName ) ), self::RTrimPath( $sVer ) );
-	}
 
+	static function TrimPath( $sPath )
+	{
+		return self::LTrimPath( self::RTrimPath( $sPath ) );
+	}
 	static function LTrimPath( $sPath )
 	{
 		if ( ! is_string( $sPath ) )
@@ -60,7 +36,106 @@ class Lib
 		}
 		return rtrim( $sPath, "\r\n\t \\/" );
 	}
-	static function GetRootPath()
+
+
+	//
+	//	for local
+	//
+	static function GetLocalWorkingRootDir()
+	{
+		return getcwd();
+	}
+	static function GetLocalProjectsDir()
+	{
+		return sprintf
+		(
+			"%s/%s/",
+			self::RTrimPath( self::GetLocalWorkingRootDir() ),
+			self::TrimPath( Config::Get( 'dir_projects' ) )
+		);
+	}
+	static function GetLocalProjectsExtensions()
+	{
+		$arrRet	= [ 'lava' ];
+
+		//
+		//	ext_project	= [ 'ext1', 'ext2' ]
+		//
+		$arrExts = Config::Get( 'ext_project' );
+		if ( is_array( $arrExts ) && count( $arrExts ) )
+		{
+			$arrRet = [];
+			foreach ( $arrExts as $sExt )
+			{
+				$sExt = strtolower( trim( $sExt ) );
+				if ( is_string( $sExt ) &&
+					strlen( $sExt ) > 0 )
+				{
+					$arrRet[] = $sExt;
+				}
+			}
+		}
+
+		return $arrRet;
+	}
+
+	static function GetLocalLogsDir()
+	{
+		return sprintf
+		(
+			"%s/%s/",
+			self::RTrimPath( self::GetLocalWorkingRootDir() ),
+			self::TrimPath( Config::Get( 'dir_logs' ) )
+		);
+	}
+
+	static function GetLocalReleaseDir()
+	{
+		return sprintf
+		(
+			"%s/%s/",
+			self::RTrimPath( self::GetLocalWorkingRootDir() ),
+			self::TrimPath( Config::Get( 'dir_release' ) )
+		);
+	}
+	static function GetLocalReleasedProjectDir( $sProjectName )
+	{
+		if ( ! is_string( $sProjectName ) || 0 == strlen( $sProjectName ) )
+		{
+			return '';
+		}
+
+		return sprintf
+		(
+			"%s/%s/",
+			self::RTrimPath( self::GetLocalReleaseDir() ),
+			self::TrimPath( $sProjectName )
+		);
+	}
+	static function GetLocalReleasedVersionDir( $sProjectName, $sVer )
+	{
+		if ( ! is_string( $sProjectName ) || 0 == strlen( $sProjectName ) )
+		{
+			return '';
+		}
+		if ( ! is_string( $sVer ) || 0 == strlen( $sVer ) )
+		{
+			return '';
+		}
+
+		return sprintf
+		(
+			"%s/%s/",
+			self::RTrimPath( self::GetLocalReleasedProjectDir( $sProjectName ) ),
+			self::TrimPath( $sVer )
+		);
+	}
+
+
+	//
+	//	for phar
+	//
+	static function GetPharRootDir()
 	{
 		$sRet		= '';
 
@@ -85,10 +160,12 @@ class Lib
 		}
 
 		//	...
-		$sRet = sprintf( "%s/%s", self::RTrimPath( self::GetRootPath() ), self::LTrimPath( $sSubPath ) );
-
-		//	...
-		return $sRet;
+		return sprintf
+		(
+			"%s/%s/",
+			self::RTrimPath( self::GetPharRootDir() ),
+			self::TrimPath( $sSubPath )
+		);
 	}
 	static function GetRandomString( $nLength = 32 )
 	{
@@ -132,6 +209,9 @@ class Lib
 		return ( is_array( $arrRet ) ) ? $arrRet : null;
 	}
 
+	//
+	//	Enumerate directory recursively
+	//
 	static function REnumerateDir( $sDir, $nLevel = 0 )
 	{
 		//
@@ -191,13 +271,16 @@ class Lib
 		}
 		catch ( Exception $e )
 		{
-			//throw
+			throw $e;
 		}
 
 		//	...
 		return $arrRet;
 	}
 
+	//
+	//	Remove directory recursively
+	//
 	static function RRmDir( $sDir, $bRetainRoot = false, $nLevel = 0 )
 	{
 		//
@@ -253,7 +336,7 @@ class Lib
 		}
 		catch ( Exception $e )
 		{
-			//throw
+			throw $e;
 		}
 
 		//	...
@@ -324,7 +407,7 @@ class Lib
 		}
 		catch ( Exception $e )
 		{
-			//throw
+			throw $e;
 		}
 
 		//	...
@@ -396,7 +479,7 @@ class Lib
 		}
 		catch ( Exception $e )
 		{
-			//throw
+			throw $e;
 		}
 
 		//	...
