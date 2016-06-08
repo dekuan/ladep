@@ -130,10 +130,10 @@ class CGit
 				"sed -n '1p' | " .
 				"awk -F '/' '{print($2)}'";
 		$sCommand = sprintf( $sFormat, $sRepositoryUrl );
-		if ( is_callable( $pfnCbFunc ) )
-		{
-			$pfnCbFunc( "info", $sCommand );
-		}
+//		if ( is_callable( $pfnCbFunc ) )
+//		{
+//			$pfnCbFunc( "info", $sCommand );
+//		}
 
 		$cProcess = new Process\Process( $sCommand );
 		$cProcess
