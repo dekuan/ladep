@@ -106,7 +106,7 @@ class CGit
 	//	@ Public
 	//	get last tag from remote repository
 	//
-	public function GetLastTagFromRemoteRepository( $sRepositoryUrl, callable $pfnCbFunc )
+	public function GetLastTagFromRemoteRepository( $sRepositoryUrl, $pfnCbFunc = null )
 	{
 		//
 		//	sRepositoryUrl	- [in] the address of remote repository

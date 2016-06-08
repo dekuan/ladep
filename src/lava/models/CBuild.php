@@ -36,6 +36,8 @@ class CBuild
 		$nRet		= -1;	//	xsconst\CConst::ERROR_UNKNOWN;
 		$sErrorDesc	= '';
 		$sErrorPath	= '';
+		$cGit		= new classes\CGit();
+
 
 		if ( ! is_callable( $pfnCbFunc ) )
 		{
@@ -44,6 +46,7 @@ class CBuild
 
 		//	...
 		$sProjectConfig	= array_key_exists( 'project_config', $arrParameter ) ? $arrParameter['project_config'] : '';
+		$bObtainLastTag	= array_key_exists( 'last', $arrParameter ) ? boolval( $arrParameter['last'] ) : false;
 		$bNoCompressJs	= array_key_exists( 'no-compress-js', $arrParameter ) ? boolval( $arrParameter['no-compress-js'] ) : false;
 		$bNoCompressCss	= array_key_exists( 'no-compress-css', $arrParameter ) ? boolval( $arrParameter['no-compress-css'] ) : false;
 
@@ -59,6 +62,21 @@ class CBuild
 			$sRepoVer		= $this->m_cProject->GetRepoVer();
 			$arrSrvConfig		= $this->m_cProject->GetServerConfig();
 			$arrSrvList		= $this->m_cProject->GetServerList();
+
+			if ( $bObtainLastTag )
+			{
+				$pfnCbFunc( "info", "Try to obtain the last tag from remote repository" );
+				$sRemoteLastTag	= $cGit->GetLastTagFromRemoteRepository( $sRepoUrl, $pfnCbFunc );
+				if ( is_string( $sRemoteLastTag ) && strlen( $sRemoteLastTag ) )
+				{
+					$pfnCbFunc( "info", "\t\t  obtain the last tag [$sRemoteLastTag] successfully." );
+					$sRepoVer = $sRemoteLastTag;
+				}
+				else
+				{
+					$pfnCbFunc( "comment", "\t\t  #Failed to obtain the last tag, still use the tag [$sRepoVer] from config." );
+				}
+			}
 
 			//	...
 			$bContinue	= false;

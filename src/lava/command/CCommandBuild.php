@@ -43,6 +43,7 @@ class CCommandBuild extends Command
 			->setDescription('Build application via configuration file.')
 			->setDefinition
 			([
+				new InputOption('last', null, InputOption::VALUE_NONE, 'Automatically obtain the last tag from remote repository.'),
 				new InputOption('no-compress-js', null, InputOption::VALUE_NONE, 'Do not compress javascript files'),
 				new InputOption('no-compress-css', null, InputOption::VALUE_NONE, 'Do not compress CSS files'),
 				new Input\InputArgument( 'project_config', Input\InputArgument::REQUIRED, 'Required full path of project configuration file, e.g. /var/www/pay/pay.xs.cn.json' )
@@ -75,8 +76,9 @@ EOT
 		$nErrorId	= $cBuild->Run
 		(
 			[
-				'no-compress-js'	=> $cInput->getOption('no-compress-js'),
-				'no-compress-css'	=> $cInput->getOption('no-compress-css'),
+				'last'			=> $cInput->getOption( 'last' ),
+				'no-compress-js'	=> $cInput->getOption( 'no-compress-js' ),
+				'no-compress-css'	=> $cInput->getOption( 'no-compress-css' ),
 				'project_config'	=> $cInput->getArgument( 'project_config' ),
 			],
 			function( $sType, $vBuffer ) use ( $cOutput )
