@@ -596,7 +596,7 @@ class CMakeCompressed
 								$sCnt	= @ file_get_contents( $sCompressedFFNJs );
 
 								//	...
-								$sLineNew .= ( $this->_GetScriptProjectVersion( $sProjectName, $sVer ) . "\r\n" .
+								$sLineNew .= ( $this->_GetScriptProjectVersion( $sProjectName, $sVer ) .
 										self::CONST_LABEL_COMPRESSED_SCRIPT . $sCnt . "</script>\n" );
 							}
 						}
@@ -616,7 +616,7 @@ class CMakeCompressed
 								$sCnt	= @ file_get_contents( $sCompressedFFNCss );
 
 								//	...
-								$sLineNew .= ( $this->_GetStyleProjectVersion( $sProjectName, $sVer ) . "\r\n" .
+								$sLineNew .= ( $this->_GetStyleProjectVersion( $sProjectName, $sVer ) .
 										self::CONST_LABEL_COMPRESSED_STYLE . $sCnt . "</style>\n" );
 							}
 						}

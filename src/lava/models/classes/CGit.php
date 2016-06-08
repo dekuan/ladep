@@ -102,24 +102,18 @@ class CGit
 	}
 
 
-	public function GetLastTag( $sRepositoryUrl, $sReleaseDir, callable $pfnCbFunc )
+	//
+	//	@ Public
+	//	get last tag from remote repository
+	//
+	public function GetLastTagFromRemoteRepository( $sRepositoryUrl, callable $pfnCbFunc )
 	{
 		//
-		//	1,
-		//	If you don't see latest tag, make sure of fetching origin before running that:
-		//	git remote update
-		//
-		//	3,
-		//	git describe --abbrev=0 --tags
-		//
-		//	error of no tags:
-		//		fatal: No names found, cannot describe anything.
+		//	sRepositoryUrl	- [in] the address of remote repository
+		//	pfnCbFunc	- [in] callback function address
+		//	RETURN		- string	the last tag
 		//
 		if ( ! is_string( $sRepositoryUrl ) || 0 == strlen( $sRepositoryUrl ) )
-		{
-			return '';
-		}
-		if ( ! is_string( $sReleaseDir ) || 0 == strlen( $sReleaseDir ) )
 		{
 			return '';
 		}
@@ -129,51 +123,33 @@ class CGit
 		//
 		//	...
 		//
-		$sCommand = sprintf( "git remote update \"%s\" \"%s\"", $sRepositoryUrl, $sReleaseDir );
+		$sFormat = "git ls-remote --tags \"%s\" | " .
+				"awk -F '/' '{ print( length($3) \"/\" $3 ) }' | " .
+				"grep -v '{}' | " .
+				"sort -t '/' -gr | " .
+				"sed -n '1p' | " .
+				"awk -F '/' '{print($2)}'";
+		$sCommand = sprintf( $sFormat, $sRepositoryUrl );
 		if ( is_callable( $pfnCbFunc ) )
 		{
 			$pfnCbFunc( "info", $sCommand );
 		}
 
-		$cProcessUpdate = new Process\Process( $sCommand );
-		$cProcessUpdate
+		$cProcess = new Process\Process( $sCommand );
+		$cProcess
 			->setTimeout( libs\Config::Get( 'cmd_timeout' ) )
 			->enableOutput()
 			->run();
-		if ( $cProcessUpdate->isSuccessful() )
+		if ( $cProcess->isSuccessful() )
 		{
-			if ( is_callable( $pfnCbFunc ) )
-			{
-				$pfnCbFunc( "info", "\t\t  git remote update successfully." );
-			}
-
-			//
-			//
-			//
-			$sCommand = sprintf( "git describe --abbrev=0 --tags \"%s\" \"%s\"", $sRepositoryUrl, $sReleaseDir );
-			$cProcessGetLastTag = new Process\Process( $sCommand );
-			$cProcessGetLastTag
-				->setTimeout( libs\Config::Get( 'cmd_timeout' ) )
-				->enableOutput()
-				->run();
-			if ( $cProcessGetLastTag->isSuccessful() )
-			{
-				//	...
-				$sRet = trim( $cProcessGetLastTag->getOutput() );
-			}
-			else
-			{
-				if ( is_callable( $pfnCbFunc ) )
-				{
-					$pfnCbFunc( "comment", "\t\t  #Failed to execute git describe --abbrev=0 --tags" );
-				}
-			}
+			//	...
+			$sRet = trim( $cProcess->getOutput() );
 		}
 		else
 		{
 			if ( is_callable( $pfnCbFunc ) )
 			{
-				$pfnCbFunc( "comment", "\t\t  #Failed to execute git remote update." );
+				$pfnCbFunc( "comment", "\t\t  #Failed to obtain last tag from remote repository." );
 			}
 		}
 
