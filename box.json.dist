@@ -15,7 +15,7 @@
         }
     ],
     "git-version": "package_version",
-    "main": "bin/lava",
-    "output": "lava.phar",
+    "main": "bin/ladep",
+    "output": "ladep.phar",
     "stub": true
 }

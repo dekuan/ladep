@@ -10,8 +10,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use xscn\xsconst;
-use dekuan\lava\libs;
-use dekuan\lava\models\classes;
+use dekuan\ladep\libs;
+use dekuan\ladep\models\classes;
 
 
 
@@ -19,7 +19,7 @@ class TestForCRSync extends PHPUnit_Framework_TestCase
 {
 	public function testForAAA()
 	{
-		$sFFNConfig	= '../configs/lava-pay.xs.cn.json';
+		$sFFNConfig	= '../configs/ladep-pay.xs.cn.json';
 		$sDirRelease	= '../releases/1.0.0/';
 		$cProject	= new classes\CProject();
 		$cRSync		= new classes\CRSync();

@@ -1,15 +1,15 @@
 /.idea/
 /.svn/
 /vendor/
-/src/lava/.idea/
+/src/ladep/.idea/
 /releases/
 /node_modules/
 
 composer.lock
 box.json
 private.key
-lava.phar.pubkey
-/lava.phar
+ladep.phar.pubkey
+/ladep.phar
 yuicompressor*
 
 xsdepdata

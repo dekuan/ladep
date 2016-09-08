@@ -11,9 +11,9 @@
     <meta name="screen-orientation"content="portrait">
     <meta name="x5-orientation"content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <link href="{{asset('/wap/css/style.css')}}" rel="stylesheet" type="text/css" lava="1">
-    <link href="{{asset('/wap/css/common.css')}}" rel="stylesheet" type="text/css" lava="1">
-    <link href="{{asset('/wap/css/main.css')}}" rel="stylesheet" type="text/css" lava="1">
+    <link href="{{asset('/wap/css/style.css')}}" rel="stylesheet" type="text/css" ladep="1">
+    <link href="{{asset('/wap/css/common.css')}}" rel="stylesheet" type="text/css" ladep="1">
+    <link href="{{asset('/wap/css/main.css')}}" rel="stylesheet" type="text/css" ladep="1">
     <link href="{{asset('/wap/images/logo-114-114.png')}}" rel="apple-touch-icon">
     <link href="{{asset('/wap/images/logo-32-32.png')}}" rel="Shortcut Icon" type="image/x-icon">
     <base target="_self">
@@ -129,16 +129,16 @@
 .demo{width:100%;height:2.75rem;position:relative;top:-12.5rem;}
 .demo .lie{margin:0 0 20px 0;}
 </style>
-<script src="{{asset('/wap/js/jquery-1.11.3.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/jquery.mobile.custom.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/jquery.touchSwipe.min.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/userinfo.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/mavatar.js')}}" lava="1"></script>
-<script src="{{asset('/js/fileuploader-2.0b.js')}}" lava="1"></script>
-<script src="{{asset('/js/llib.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/userinfo_loaddata.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/date.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/iscroll.js')}}" lava="1"></script>
+<script src="{{asset('/wap/js/jquery-1.11.3.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/jquery.mobile.custom.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/jquery.touchSwipe.min.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/userinfo.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/mavatar.js')}}" ladep="1"></script>
+<script src="{{asset('/js/fileuploader-2.0b.js')}}" ladep="1"></script>
+<script src="{{asset('/js/llib.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/userinfo_loaddata.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/date.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/iscroll.js')}}" ladep="1"></script>
 
 <script>
     var  g_cAccountCenter=new CAccountCenter();

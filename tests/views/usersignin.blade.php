@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
     <meta property="qc:admins" content="27155754347564603636" />
     <title>登录</title>
-    <link href="{{asset('/css/bootstrap.css')}}" lava="1" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('/css/login.css')}}" lava="1" />
-    <link rel="stylesheet" href="{{asset('/css/mail_test.css')}}" lava="1" />
+    <link href="{{asset('/css/bootstrap.css')}}" ladep="1" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('/css/login.css')}}" ladep="1" />
+    <link rel="stylesheet" href="{{asset('/css/mail_test.css')}}" ladep="1" />
     <link href="{{asset('/images/logo-32-32.png')}}" rel="Shortcut Icon" type="image/x-icon">
-    <script src="{{asset('/js/html5shiv.min.js')}}" lava="1" ></script>
-    <script src="{{asset('/js/respond.js')}}" lava="1" ></script>
+    <script src="{{asset('/js/html5shiv.min.js')}}" ladep="1" ></script>
+    <script src="{{asset('/js/respond.js')}}" ladep="1" ></script>
 </head>
 <body>
 <input name="hidden_umid" class="js-hidden-umid" type="hidden">
@@ -92,13 +92,13 @@
         <input type="button" class="pop_sure_btn" style="width:65px;height:35px;background-color:#f9494c;color:#fff; float:right; margin-top:8px; margin-right:15px;border:none;border-radius:5px;font-size:16px;" value="确认"/>
     </div>
 </div>
-<script src="{{asset('/js/jquery-1.11.3.js')}}" lava="1" ></script>
-<script src="{{asset('/js/bootstrap.js')}}" lava="1" ></script>
-<script src="{{asset('/js/xslib.js')}}" lava="1" ></script>
-<script src="{{asset('/js/laddress.js')}}" lava="1" ></script>
-<script src="{{asset('/js/usersignin.js')}}" lava="1" ></script>
-<script src="{{asset('/js/loaddata.js')}}" lava="1" ></script>
-<script src="{{asset('/js/purl.js')}}" lava="1" ></script>
+<script src="{{asset('/js/jquery-1.11.3.js')}}" ladep="1" ></script>
+<script src="{{asset('/js/bootstrap.js')}}" ladep="1" ></script>
+<script src="{{asset('/js/xslib.js')}}" ladep="1" ></script>
+<script src="{{asset('/js/laddress.js')}}" ladep="1" ></script>
+<script src="{{asset('/js/usersignin.js')}}" ladep="1" ></script>
+<script src="{{asset('/js/loaddata.js')}}" ladep="1" ></script>
+<script src="{{asset('/js/purl.js')}}" ladep="1" ></script>
 <script>
     var g_cSignin = new CSignin();
     $(function () {
