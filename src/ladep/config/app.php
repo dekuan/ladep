@@ -116,11 +116,11 @@ return
 	//	...
 	'path_chmod_dirs'		=>
 		[
-			'/storage/'			=> 750,		//	-rwxr-x---
-			'/bootstrap/cache/'		=> 750,		//	-rwxr-x---
-			'/vendor/'			=> 750,		//	-rwxr-x---
-			'/public/'			=> 750,		//	-rwxr-x---
-			'/resources/'			=> 750,		//	-rwxr-x---
-			'/resources/views/errors/'	=> 750,		//	-rwxr-x---
+			'/storage/'			=> 755,		//	-rwxr-xr-x
+			'/bootstrap/cache/'		=> 755,		//	-rwxr-xr-x
+			'/vendor/'			=> 755,		//	-rwxr-xr-x
+			'/public/'			=> 755,		//	-rwxr-xr-x
+			'/resources/'			=> 755,		//	-rwxr-xr-x
+			'/resources/views/errors/'	=> 755,		//	-rwxr-xr-x
 		],
 ];
