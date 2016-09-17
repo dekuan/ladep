@@ -9,7 +9,6 @@ composer.lock
 box.json
 private.key
 ladep.phar.pubkey
-/ladep.phar
 yuicompressor*
 
 xsdepdata
