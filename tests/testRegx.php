@@ -25,16 +25,16 @@ require_once( dirname( __DIR__ ) . "/vendor/autoload.php" );
  */
 class testRegx extends PHPUnit_Framework_TestCase
 {
-	//	lava="1"
-	const CONST_REGX_LADEP		= "/lava[ ]*=[ ]*[\"']{0,1}[ ]*1[ ]*[\"']{0,1}/i";
+	//	ladep="1"
+	const CONST_REGX_LADEP		= "/ladep[ ]*=[ ]*[\"']{0,1}[ ]*1[ ]*[\"']{0,1}/i";
 
 
 	const CONST_REGX_SCRIPT = "/<script.*?" .
 				"src[ ]*=[ ]*[\"']{0,1}[\{\{asset\(']*([^'\"]+)['\)\}\}]*[ ]*[\"']{0,1}.*?>[ ]*" .
 				"<\/[ ]*script[ ]*>/i";
 
-	const CONST_LABEL_COMPRESSED_SCRIPT	= "<script compressed=\"lava\">";
-	const CONST_LABEL_COMPRESSED_STYLE	= "<style compressed=\"lava\">";
+	const CONST_LABEL_COMPRESSED_SCRIPT	= "<script compressed=\"ladep\">";
+	const CONST_LABEL_COMPRESSED_STYLE	= "<style compressed=\"ladep\">";
 
 
 	public function testRegx1()
@@ -43,9 +43,9 @@ class testRegx extends PHPUnit_Framework_TestCase
 		$arrLines =
 			[
 				"\r\n<script language=\"JavaScript\" src=\"/js/jweixin-1.0.0.js\"></script>\r\n",
-				"\r\n<script language=\"JavaScript\" src=\"/js/jweixin-1.0.0.js\" lava='1'></script>\r\n",
-				"\r\n<script language=\"JavaScript\" src=\"/js/jweixin-1.0.0.js\" lava=1></script>\r\n",
-				"\r\n<script language=\"JavaScript\" src=\"/js/jweixin-1.0.0.js\" lava=\"1\"></script>\r\n",
+				"\r\n<script language=\"JavaScript\" src=\"/js/jweixin-1.0.0.js\" ladep='1'></script>\r\n",
+				"\r\n<script language=\"JavaScript\" src=\"/js/jweixin-1.0.0.js\" ladep=1></script>\r\n",
+				"\r\n<script language=\"JavaScript\" src=\"/js/jweixin-1.0.0.js\" ladep=\"1\"></script>\r\n",
 			];
 
 		foreach ( $arrLines as $sLine )
@@ -85,7 +85,7 @@ class testRegx extends PHPUnit_Framework_TestCase
 				! strstr( $sLine, self::CONST_LABEL_COMPRESSED_STYLE ) ) )
 		{
 			//
-			//	matched "lava=1"
+			//	matched "ladep=1"
 			//
 			if ( 1 == preg_match( self::CONST_REGX_LADEP, $sLine ) )
 			{

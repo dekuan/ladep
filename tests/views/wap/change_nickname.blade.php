@@ -9,8 +9,8 @@
     <meta name="description" content="手机小说阅读网,小说手机阅读。手机小说阅读网提供最新章节首发">
     <meta name="format-detection" content="telphone=no, email=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link href="{{asset('/wap/css/style.css')}}" rel="stylesheet" type="text/css"  lava="1">
-    <link href="{{asset('/wap/css/userinfo_form.css')}}" rel="stylesheet" type="text/css" lava="1">
+    <link href="{{asset('/wap/css/style.css')}}" rel="stylesheet" type="text/css"  ladep="1">
+    <link href="{{asset('/wap/css/userinfo_form.css')}}" rel="stylesheet" type="text/css" ladep="1">
     <base target="_self">
     <link href="{{asset('/wap/images/logo-114-114.png')}}" rel="apple-touch-icon">
     <link href="{{asset('/wap/images/logo-114-114.png')}}" rel="Shortcut Icon" type="image/x-icon">
@@ -25,11 +25,11 @@
     </form>
 </section>
 <div class='ajax_aplly_error'></div>
-<script src="{{asset('/wap/js/jquery-1.11.3.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/const.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/userinfo_nickname.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/userinfo_loaddata.js')}}" lava="1"></script>
-<script src="{{asset('/wap/js/xslib.js')}}" lava="1"></script>
+<script src="{{asset('/wap/js/jquery-1.11.3.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/const.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/userinfo_nickname.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/userinfo_loaddata.js')}}" ladep="1"></script>
+<script src="{{asset('/wap/js/xslib.js')}}" ladep="1"></script>
 <script>
     var g_CAccountCenter_Nickname=new CAccountCenter_Nickname();
     $(function(){

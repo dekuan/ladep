@@ -51,20 +51,20 @@ box build
 #
 git checkout gh-pages
 
-cp lava.phar downloads/lava-${TAG}.phar
-git add downloads/lava-${TAG}.phar
+cp ladep.phar downloads/ladep-${TAG}.phar
+git add downloads/ladep-${TAG}.phar
 
-SHA1=$(openssl sha1 lava.phar)
+SHA1=$(openssl sha1 ladep.phar)
 
-JSON='name:"lava.phar"'
+JSON='name:"ladep.phar"'
 JSON="${JSON},sha1:\"${SHA1}\""
-JSON="${JSON},url:\"http://mattketmo.github.io/lava/downloads/lava-${TAG}.phar\""
+JSON="${JSON},url:\"http://mattketmo.github.io/ladep/downloads/ladep-${TAG}.phar\""
 JSON="${JSON},version:\"${TAG}\""
 
-if [ -f lava.phar.pubkey ]; then
-    cp lava.phar.pubkey pubkeys/lava-${TAG}.phar.pubkeys
-    git add pubkeys/lava-${TAG}.phar.pubkeys
-    JSON="${JSON},publicKey:\"http://mattketmo.github.io/lava/pubkeys/lava-${TAG}.phar.pubkey\""
+if [ -f ladep.phar.pubkey ]; then
+    cp ladep.phar.pubkey pubkeys/ladep-${TAG}.phar.pubkeys
+    git add pubkeys/ladep-${TAG}.phar.pubkeys
+    JSON="${JSON},publicKey:\"http://mattketmo.github.io/ladep/pubkeys/ladep-${TAG}.phar.pubkey\""
 fi
 
 #
