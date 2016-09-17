@@ -34,6 +34,7 @@ namespace Dekuan\Ladep
 	 */
 	class Installer
 	{
+		const COMPANY_NAME	= 'Dekuan, Inc.';
 		const APP_NAME		= 'Ladep';
 		const URL_MANIFEST	= 'https://raw.githubusercontent.com/dekuan/ladep/master/manifest.json';
 
@@ -43,14 +44,16 @@ namespace Dekuan\Ladep
 		//
 		public function Install()
 		{
-			echo self::APP_NAME . " Installer", PHP_EOL;
+			echo PHP_EOL;
+			echo self::APP_NAME . " by " . self::COMPANY_NAME . " Installer", PHP_EOL;
 			echo "==================================================", PHP_EOL, PHP_EOL;
 
 			echo "Environment Check", PHP_EOL;
 			echo "--------------------------------------------------", PHP_EOL, PHP_EOL;
 
-			echo "- indicates success.", PHP_EOL;
-			echo "x indicates error.", PHP_EOL, PHP_EOL;
+			echo " - indicates success.", PHP_EOL;
+			echo " x indicates error.", PHP_EOL, PHP_EOL;
+			echo PHP_EOL;
 
 			//
 			//	check version
@@ -65,13 +68,13 @@ namespace Dekuan\Ladep
 				}
 			);
 
-			echo "- Everything seems good!" . PHP_EOL . PHP_EOL;
+			echo " - Everything seems good!" . PHP_EOL . PHP_EOL;
 
 			echo "Download" . PHP_EOL;
 			echo "--------------------------------------------------" . PHP_EOL . PHP_EOL;
 
 			//	Retrieve manifest
-			echo " - Reading manifest..." . PHP_EOL;
+			echo " - Reading manifest ..." . PHP_EOL;
 			$arrDlObject	= $this->_GetDownloadObjectByManifest();
 			if ( null == $arrDlObject )
 			{
@@ -82,7 +85,7 @@ namespace Dekuan\Ladep
 			//
 			//
 			//
-			echo " - Downloading " . self::APP_NAME . " v", Dumper::toString( $arrDlObject['version'] ), "..." . PHP_EOL;
+			echo " - Downloading " . self::APP_NAME . " v", Dumper::toString( $arrDlObject['version'] ), " ..." . PHP_EOL;
 
 			//	...
 			@ file_put_contents( $arrDlObject['name'], file_get_contents( $arrDlObject['url'] ) );
@@ -176,11 +179,11 @@ namespace Dekuan\Ladep
 			//
 			if ( $pfnCondition() )
 			{
-				echo ' - ', $sMsgSuccess, PHP_EOL;
+				echo " - " . $sMsgSuccess . PHP_EOL;
 			}
 			else
 			{
-				echo ' * ', $sMsgFailure, PHP_EOL;
+				echo " x " . $sMsgFailure . PHP_EOL;
 				if ( $bExit )
 				{
 					exit( 1 );
