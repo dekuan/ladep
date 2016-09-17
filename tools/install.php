@@ -125,7 +125,7 @@ namespace Dekuan\Ladep
 			//
 			//	done
 			//
-			echo " - " . self::APP_NAME . " was installed in current directory!" . PHP_EOL;
+			echo " - " . self::APP_NAME . " was installed successfully in current directory!" . PHP_EOL;
 		}
 
 
