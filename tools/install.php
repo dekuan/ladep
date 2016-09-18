@@ -1,8 +1,16 @@
 #!/usr/bin/env php
 <?php
 
+
 namespace
 {
+	@ ini_set( 'date.timezone', 'Etc/GMT+0' );
+	if ( PHP_VERSION > '5.1' )
+	{
+		@ date_default_timezone_set( 'Etc/GMT+0' );
+	}
+
+	//	...
 	use Dekuan\Ladep\Installer;
 
 	//	...
