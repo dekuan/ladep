@@ -1,6 +1,5 @@
-#!/usr/bin/env php
 <?php
-
+//#!/usr/bin/env php
 
 namespace
 {
