@@ -53,9 +53,11 @@ namespace Dekuan\Ladep
 		//
 		public function Install()
 		{
-			echo PHP_EOL;
-			echo self::APP_NAME . " by " . self::COMPANY_NAME . " Installer", PHP_EOL;
+			//echo self::APP_NAME . " by " . self::COMPANY_NAME . " Installer", PHP_EOL;
 			echo "==================================================", PHP_EOL, PHP_EOL;
+
+			$this->_PrintHeader();
+
 
 			echo "Environment Check", PHP_EOL;
 			echo "--------------------------------------------------", PHP_EOL, PHP_EOL;
@@ -137,6 +139,22 @@ namespace Dekuan\Ladep
 			echo " - " . self::APP_NAME . " was installed successfully in current directory!" . PHP_EOL;
 		}
 
+
+		//
+		//	print header
+		//
+		private function _PrintHeader()
+		{
+			echo "        _______ ______  _______  _____" . PHP_EOL,
+			" |      |_____| |     \ |______ |_____]" . PHP_EOL,
+			" |_____ |     | |_____/ |______ |" . PHP_EOL,
+			"                                       " . PHP_EOL,
+			"                                      " . self::COMPANY_NAME . PHP_EOL,
+			PHP_EOL,
+			PHP_EOL,
+			PHP_EOL,
+			PHP_EOL;
+		}
 
 		//
 		//	read download url by manifest
