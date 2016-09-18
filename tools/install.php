@@ -128,6 +128,7 @@ namespace Dekuan\Ladep
 			echo " - Making " . self::APP_NAME . " executable..." . PHP_EOL;
 			@ rename( $arrDlObject[ 'name' ], self::FILE_NAME );
 			@ chmod( self::FILE_NAME, 0755 );
+			@ unlink( 'installer.php' );
 
 
 			//
