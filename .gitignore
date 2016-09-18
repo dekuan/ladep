@@ -5,6 +5,9 @@
 /releases/
 /node_modules/
 
+/tools/ladep
+/tools/ladep.phar
+
 composer.lock
 box.json
 private.key

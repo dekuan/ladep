@@ -25,6 +25,7 @@ namespace
 
 namespace Dekuan\Ladep
 {
+	use Dekuan\Version;
 	use Dekuan\Version\Comparator;
 	use Dekuan\Version\Dumper;
 	use Dekuan\Version\Parser;
@@ -36,6 +37,7 @@ namespace Dekuan\Ladep
 	{
 		const COMPANY_NAME	= 'Dekuan, Inc.';
 		const APP_NAME		= 'Ladep';
+		const FILE_NAME		= 'ladep';
 		const URL_MANIFEST	= 'https://raw.githubusercontent.com/dekuan/ladep/master/manifest.json';
 
 
@@ -83,17 +85,19 @@ namespace Dekuan\Ladep
 			}
 
 			//
-			//
+			//	download file
 			//
 			echo " - Downloading " . self::APP_NAME . " v", Dumper::toString( $arrDlObject['version'] ), " ..." . PHP_EOL;
-
-			//	...
-			@ file_put_contents( $arrDlObject['name'], file_get_contents( $arrDlObject['url'] ) );
+			if ( ! $this->_DownloadFile( $arrDlObject ) )
+			{
+				echo " x Failed to download file." . PHP_EOL;
+				exit();
+			}
 
 			echo " - Checking file checksum ..." . PHP_EOL;
-			if ( $arrDlObject['sha1'] !== sha1_file( $arrDlObject['name'] ) )
+			if ( ! $this->_VerifyFileBySha( $arrDlObject ) )
 			{
-				unlink( $arrDlObject['name'] );
+				unlink( $arrDlObject[ 'name' ] );
 				echo " x The download was corrupted." . PHP_EOL;
 				exit();
 			}
@@ -103,15 +107,11 @@ namespace Dekuan\Ladep
 			//	check file
 			//
 			echo " - Checking if valid Phar ..." . PHP_EOL;
-
-			try
+			if ( ! $this->_VerifyFileByPhar( $arrDlObject ) )
 			{
-				new \Phar( $arrDlObject['name'] );
-			}
-			catch ( \Exception $e )
-			{
+				unlink( $arrDlObject[ 'name' ] );
 				echo " x The Phar is not valid.\n\n";
-				throw $e;
+				exit();
 			}
 
 
@@ -119,7 +119,8 @@ namespace Dekuan\Ladep
 			//	make executable
 			//
 			echo " - Making " . self::APP_NAME . " executable..." . PHP_EOL;
-			@chmod( $arrDlObject['name'], 0755 );
+			@ rename( $arrDlObject[ 'name' ], self::FILE_NAME );
+			@ chmod( self::FILE_NAME, 0755 );
 
 
 			//
@@ -167,6 +168,88 @@ namespace Dekuan\Ladep
 
 
 		//
+		//	download file
+		//
+		public function _DownloadFile( $arrDlObject )
+		{
+			$bRet	= false;
+			$nDl	= false;
+
+			if ( $this->_IsValidManifestItem( $arrDlObject ) )
+			{
+				if ( is_file( $arrDlObject[ 'name' ] ) )
+				{
+					//echo " - Remove file " . $arrDlObject[ 'name' ] . "." . PHP_EOL;
+					@ unlink( $arrDlObject[ 'name' ] );
+				}
+				if ( is_file( self::FILE_NAME ) )
+				{
+					//echo " - Remove file " . self::FILE_NAME . "." . PHP_EOL;
+					@ unlink( self::FILE_NAME );
+				}
+
+
+				//	...
+				$nDl = @ file_put_contents
+				(
+					$arrDlObject['name'],
+					file_get_contents( $arrDlObject['url'] )
+				);
+				if ( false !== $nDl )
+				{
+					$bRet = true;
+				}
+			}
+
+			return $bRet;
+		}
+
+		//
+		//	verify file
+		//
+		public function _VerifyFileBySha( $arrDlObject )
+		{
+			$bRet	= false;
+
+			if ( $this->_IsValidManifestItem( $arrDlObject ) )
+			{
+				if ( $arrDlObject[ 'sha1' ] === sha1_file( $arrDlObject[ 'name' ] ) )
+				{
+					$bRet = true;
+				}
+			}
+
+			return $bRet;
+		}
+
+		//
+		//	verify file by Phar
+		//
+		public function _VerifyFileByPhar( $arrDlObject )
+		{
+			$bRet	= false;
+
+			if ( $this->_IsValidManifestItem( $arrDlObject ) )
+			{
+				try
+				{
+					new \Phar( $arrDlObject[ 'name' ] );
+
+					//	...
+					$bRet = true;
+				}
+				catch ( \Exception $e )
+				{
+					$bRet = false;
+					//throw $e;
+				}
+			}
+
+			return $bRet;
+		}
+
+
+		//
 		//	Checks a condition, outputs a message, and exits if failed.
 		//
 		public function _Check( $sMsgSuccess, $sMsgFailure, $pfnCondition, $bExit = true )
@@ -193,7 +276,9 @@ namespace Dekuan\Ladep
 
 		private function _IsValidManifestItem( $arrItem )
 		{
-			return ( is_array( $arrItem ) &&
+			$bRet = false;
+
+			if ( is_array( $arrItem ) &&
 				array_key_exists( 'name', $arrItem ) &&
 				array_key_exists( 'sha1', $arrItem ) &&
 				array_key_exists( 'url', $arrItem ) &&
@@ -201,11 +286,27 @@ namespace Dekuan\Ladep
 				is_string( $arrItem[ 'name' ] ) &&
 				is_string( $arrItem[ 'sha1' ] ) &&
 				is_string( $arrItem[ 'url' ] ) &&
-				is_string( $arrItem[ 'version' ] ) &&
 				strlen( $arrItem[ 'name' ] ) > 0 &&
 				strlen( $arrItem[ 'sha1' ] ) > 0 &&
-				strlen( $arrItem[ 'url' ] ) > 0 &&
-				strlen( $arrItem[ 'version' ] ) > 0 );
+				strlen( $arrItem[ 'url' ] ) > 0 )
+			{
+				if ( is_string( $arrItem[ 'version' ] ) )
+				{
+					if ( strlen( $arrItem[ 'version' ] ) > 0 )
+					{
+						$bRet = true;
+					}
+				}
+				else if ( is_object( $arrItem[ 'version' ] ) )
+				{
+					if ( $arrItem[ 'version' ] instanceof Version\Version )
+					{
+						$bRet = true;
+					}
+				}
+			}
+
+			return $bRet;
 		}
 	}
 }
