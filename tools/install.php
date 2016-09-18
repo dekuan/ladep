@@ -1,7 +1,7 @@
 <?php
-//#!/usr/bin/env php
 
 namespace
+
 {
 	@ ini_set( 'date.timezone', 'Etc/GMT+0' );
 	if ( PHP_VERSION > '5.1' )
