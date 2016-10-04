@@ -53,9 +53,6 @@ namespace Dekuan\Ladep
 		//
 		public function Install()
 		{
-			//echo self::APP_NAME . " by " . self::COMPANY_NAME . " Installer", PHP_EOL;
-			echo "==================================================", PHP_EOL, PHP_EOL;
-
 			$this->_PrintHeader();
 
 
@@ -145,6 +142,8 @@ namespace Dekuan\Ladep
 		//
 		private function _PrintHeader()
 		{
+			//echo self::APP_NAME . " by " . self::COMPANY_NAME . " Installer", PHP_EOL;
+			echo "==================================================", PHP_EOL, PHP_EOL;
 			echo "        _______ ______  _______  _____" . PHP_EOL,
 			" |      |_____| |     \ |______ |_____]" . PHP_EOL,
 			" |_____ |     | |_____/ |______ |" . PHP_EOL,

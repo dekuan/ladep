@@ -41,9 +41,16 @@ EOT
 		$cList		= new models\CView();
 		$sErrorDesc	= '';
 
+		//
+		//	Print header
+		//
+		libs\MainApp::PrintHeader();
+
+
 		//	...
 		$this->_Init();
-		$this->_PintHeader( $cOutput );
+		$this->_PintStartInfo( $cOutput );
+
 
 		$nErrorId	= $cList->Run
 		(
@@ -113,7 +120,7 @@ EOT
 	{
 		$this->m_sDirCurrent	= getcwd();
 	}
-	private function _PintHeader( OutputInterface $cOutput )
+	private function _PintStartInfo( OutputInterface $cOutput )
 	{
 		if ( ! $cOutput instanceof OutputInterface )
 		{
@@ -121,8 +128,8 @@ EOT
 		}
 
 		//	...
-		$cOutput->writeln( "<info>----------------------------------------------------------------------</info>" );
-		$cOutput->writeln( "<info>Try to list all released version on server, please wait for a while ...</info>" );
+		//$cOutput->writeln( "<info>----------------------------------------------------------------------</info>" );
+		$cOutput->writeln( "<info>Try to list all released versions on server(s), please wait for a while ...</info>" );
 		$cOutput->writeln( "" );
 
 		return true;

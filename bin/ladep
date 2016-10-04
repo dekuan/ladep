@@ -17,12 +17,13 @@ require __DIR__ . '/../vendor/dekuan/delib/src/CLib.php';
 @ ini_set( 'max_execution_time',	'0' );
 @ ini_set( 'max_input_time',		'0' );
 @ ini_set( 'memory_limit',		'1024M' );
-@ error_reporting( E_ALL );
+@ error_reporting( E_ALL & ~ E_WARNING & ~ E_NOTICE );
+@ ini_set( 'error_reporting', E_ALL & ~ E_WARNING & ~ E_NOTICE );
 
-@ ini_set( 'date.timezone', 'Etc/GMT+0' );
+@ ini_set( 'date.timezone', 'utc' );
 if ( PHP_VERSION > '5.1' )
 {
-	@ date_default_timezone_set( 'Etc/GMT+0' );
+	@ date_default_timezone_set( 'utc' );
 }
 
 
@@ -46,4 +47,5 @@ $application->add( new command\CCommandPush() );
 $application->add( new command\CCommandRollback() );
 $application->add( new command\CCommandPulllog() );
 $application->add( new command\CCommandView() );
+$application->add( new command\CCommandUpdate() );
 $application->run();

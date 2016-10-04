@@ -47,8 +47,14 @@ EOT
 	{
 		$cPush	= new models\CPush();
 
+		//
+		//	Print header
+		//
+		libs\MainApp::PrintHeader();
+
 		//	...
 		$this->_Init();
+		$this->_PintStartInfo( $cOutput );
 
 		//	...
 		$nErrorId	= $cPush->Run
@@ -120,7 +126,7 @@ EOT
 	{
 		$this->m_sDirCurrent	= getcwd();
 	}
-	private function _PintHeader( OutputInterface $cOutput )
+	private function _PintStartInfo( OutputInterface $cOutput )
 	{
 		if ( ! $cOutput instanceof OutputInterface )
 		{
@@ -128,8 +134,8 @@ EOT
 		}
 
 		//	...
-		$cOutput->writeln( "<info>----------------------------------------------------------------------</info>" );
-		$cOutput->writeln( "<info>Your dear app is now been uploading, please wait for a while ...</info>" );
+		//$cOutput->writeln( "<info>----------------------------------------------------------------------</info>" );
+		$cOutput->writeln( "<info>Try to upload your project, please wait for a while ...</info>" );
 		$cOutput->writeln( "" );
 
 		return true;
