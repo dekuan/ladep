@@ -44,9 +44,14 @@ EOT
 	{
 		$cRollback	= new models\CPulllog();
 
+		//
+		//	Print header
+		//
+		libs\MainApp::PrintHeader();
+
 		//	...
 		$this->_Init();
-		$this->_PintHeader( $cOutput );
+		$this->_PintStartInfo( $cOutput );
 
 		$nErrorId	= $cRollback->Run
 		(
@@ -103,7 +108,7 @@ EOT
 	{
 		$this->m_sDirCurrent	= getcwd();
 	}
-	private function _PintHeader( OutputInterface $cOutput )
+	private function _PintStartInfo( OutputInterface $cOutput )
 	{
 		if ( ! $cOutput instanceof OutputInterface )
 		{
@@ -111,8 +116,8 @@ EOT
 		}
 
 		//	...
-		$cOutput->writeln( "<info>----------------------------------------------------------------------</info>" );
-		$cOutput->writeln( "<info>Pulling log files, please wait for a while ...</info>" );
+		//$cOutput->writeln( "<info>----------------------------------------------------------------------</info>" );
+		$cOutput->writeln( "<info>Try to pull log files for all of your projects, please wait for a while ...</info>" );
 		$cOutput->writeln( "" );
 
 		return true;

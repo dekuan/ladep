@@ -19,7 +19,6 @@ use dekuan\ladep\models\classes;
 
 
 
-
 // green text
 //$output->writeln('<info>foo</info>');
 
@@ -68,9 +67,14 @@ EOT
 		$cBuild		= new models\CBuild();
 		$sErrorDesc	= '';
 
+		//
+		//	Print header
+		//
+		libs\MainApp::PrintHeader();
+
 		//	...
 		$this->_Init();
-		$this->_PintHeader( $cOutput );
+		$this->_PintStartInfo( $cOutput );
 
 		//	...
 		$nErrorId	= $cBuild->Run
@@ -131,7 +135,7 @@ EOT
 	{
 		$this->m_sDirCurrent	= getcwd();
 	}
-	private function _PintHeader( OutputInterface $cOutput )
+	private function _PintStartInfo( OutputInterface $cOutput )
 	{
 		if ( ! $cOutput instanceof OutputInterface )
 		{
@@ -139,7 +143,7 @@ EOT
 		}
 
 		//	...
-		$cOutput->writeln( "<info>----------------------------------------------------------------------</info>" );
+		//$cOutput->writeln( "<info>----------------------------------------------------------------------</info>" );
 		$cOutput->writeln( "<info>Your dear app is now been building, please wait for a while ...</info>" );
 		$cOutput->writeln( "" );
 
