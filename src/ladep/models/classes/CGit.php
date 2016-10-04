@@ -80,12 +80,18 @@ class CGit
 		if ( $cProcess->isSuccessful() )
 		{
 			$sOutputStr	= $cProcess->getErrorOutput();
+			$sOutputStr	= strtolower( trim( $sOutputStr ) );
 			if ( strstr( $sOutputStr, "git clone successfully" ) )
 			{
 				$bRet = true;
 			}
-			else if ( strstr( $sOutputStr, "You are in 'detached HEAD' state." ) &&
+			else if ( strstr( $sOutputStr, "you are in 'detached head' state." ) &&
 				strstr( $sOutputStr, "git checkout -b <new-branch-name>" ) )
+			{
+				$bRet = true;
+			}
+			else if ( strstr( $sOutputStr, "you are in 'detached head' state." ) &&
+				strstr( $sOutputStr, "git checkout -b new_branch_name" ) )
 			{
 				$bRet = true;
 			}
