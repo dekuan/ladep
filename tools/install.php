@@ -51,6 +51,14 @@ namespace Dekuan\Ladep
 		const DIR_BIN		= '/usr/local/bin/';
 		const FILE_BIN_F_NAME	= self::DIR_BIN . self::FILE_NAME;
 
+		private $m_sCurrentUserName;
+		private $m_sCurrentGroupName;
+
+
+		public function __construct()
+		{
+			$this->_Init();
+		}
 
 		//
 		//	install
@@ -59,7 +67,9 @@ namespace Dekuan\Ladep
 		{
 			$this->_PrintHeader();
 
-
+			//
+			//	...
+			//
 			echo "Environment Check", PHP_EOL;
 			echo "--------------------------------------------------", PHP_EOL, PHP_EOL;
 
@@ -72,6 +82,15 @@ namespace Dekuan\Ladep
 			//
 			$this->_Check
 			(
+				'You are running this script as root.',
+				'You must run this script as root or with sudo.',
+				function()
+				{
+					return ( 0 == posix_getuid() );
+				}
+			);
+			$this->_Check
+			(
 				'You have a supported version of PHP (>= 5.3.3).',
 				'You need PHP 5.3.3 or greater.',
 				function()
@@ -79,6 +98,8 @@ namespace Dekuan\Ladep
 					return version_compare( PHP_VERSION, '5.3.3', '>=' );
 				}
 			);
+
+
 
 			echo " - Everything seems good!" . PHP_EOL . PHP_EOL;
 			echo PHP_EOL . PHP_EOL;
@@ -139,7 +160,7 @@ namespace Dekuan\Ladep
 			//
 			//	make executable
 			//
-			echo " - Installing " . self::APP_NAME . " to " . self::FILE_BIN_F_NAME . " ..." . PHP_EOL;
+			echo " - Installing " . self::APP_NAME . " to bin directory ..." . PHP_EOL;
 			if ( ! $this->_InstallToBin( $arrDlObject ) )
 			{
 				@ unlink( $arrDlObject[ 'name' ] );
@@ -157,24 +178,23 @@ namespace Dekuan\Ladep
 		}
 
 
+
 		//
-		//	install to bin and make it executable
+		//	init
 		//
-		private function _InstallToBin( $arrDlObject )
+		private function _Init()
 		{
-			$bRet	= false;
+			$arrUserInfo	= @ posix_getpwuid( @ posix_getuid() );
+			$arrGroupInfo	= @ posix_getgrgid( @ posix_getgid() );
 
-			if ( $this->_IsValidManifestItem( $arrDlObject ) )
+			if ( is_array( $arrUserInfo ) && array_key_exists( 'name', $arrUserInfo ) )
 			{
-				@ rename( $arrDlObject[ 'name' ], self::FILE_BIN_F_NAME );
-				@ chmod( self::FILE_BIN_F_NAME, 0755 );
-				@ unlink( 'installer.php' );
-
-				//	...
-				$bRet = true;
+				$this->m_sCurrentUserName	= $arrUserInfo[ 'name' ];
 			}
-
-			return $bRet;
+			if ( is_array( $arrGroupInfo ) && array_key_exists( 'name', $arrGroupInfo ) )
+			{
+				$this->m_sCurrentGroupName	= $arrGroupInfo[ 'name' ];
+			}
 		}
 
 
@@ -236,7 +256,7 @@ namespace Dekuan\Ladep
 		//
 		//	download file
 		//
-		public function _DownloadFile( $arrDlObject )
+		private function _DownloadFile( $arrDlObject )
 		{
 			$bRet	= false;
 			$nDl	= false;
@@ -271,9 +291,56 @@ namespace Dekuan\Ladep
 		}
 
 		//
+		//	install to bin and make it executable
+		//
+		private function _InstallToBin( $arrDlObject )
+		{
+			$bRet	= false;
+
+			if ( $this->_IsValidManifestItem( $arrDlObject ) )
+			{
+				@ rename( $arrDlObject[ 'name' ], self::FILE_BIN_F_NAME );
+				@ chmod( self::FILE_BIN_F_NAME, 0755 );
+				@ unlink( 'installer.php' );
+
+				//	...
+				$bRet = true;
+			}
+
+			return $bRet;
+		}
+		private function _ChangeOwner()
+		{
+			if ( is_string( $this->m_sCurrentUserName ) && is_string( $this->m_sCurrentGroupName ) )
+			{
+				//
+				//	chown
+				//
+				$sCmd = sprintf
+				(
+					"sudo chown -R %s:%s \"%s\" > /dev/null 2>&1",
+					$this->m_sCurrentUserName,
+					$this->m_sCurrentGroupName,
+					self::DIR_CONFIG
+				);
+				@ exec( $sCmd );
+
+				$sCmd = sprintf
+				(
+					"sudo chown %s:%s \"%s\" > /dev/null 2>&1",
+					$this->m_sCurrentUserName,
+					$this->m_sCurrentGroupName,
+					self::FILE_BIN_F_NAME
+				);
+				@ exec( $sCmd );
+			}
+		}
+
+
+		//
 		//	fetch configuration files
 		//
-		public function _FetchConfigurationFiles()
+		private function _FetchConfigurationFiles()
 		{
 			$bRet = false;
 
@@ -343,7 +410,7 @@ namespace Dekuan\Ladep
 		//
 		//	verify file
 		//
-		public function _VerifyFileBySha( $arrDlObject )
+		private function _VerifyFileBySha( $arrDlObject )
 		{
 			$bRet	= false;
 
@@ -361,7 +428,7 @@ namespace Dekuan\Ladep
 		//
 		//	verify file by Phar
 		//
-		public function _VerifyFileByPhar( $arrDlObject )
+		private function _VerifyFileByPhar( $arrDlObject )
 		{
 			$bRet	= false;
 
@@ -388,7 +455,7 @@ namespace Dekuan\Ladep
 		//
 		//	Checks a condition, outputs a message, and exits if failed.
 		//
-		public function _Check( $sMsgSuccess, $sMsgFailure, $pfnCondition, $bExit = true )
+		private function _Check( $sMsgSuccess, $sMsgFailure, $pfnCondition, $bExit = true )
 		{
 			//
 			//	sMsgSuccess	the success message.
