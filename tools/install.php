@@ -15,11 +15,12 @@ namespace
 	//	...
 	set_error_handler
 	(
-		function( $code, $message, $file, $line )
+		function( $nCode, $sMessage, $sFile, $nLine )
 		{
-			if ( $code & error_reporting() )
+			if ( $nCode & error_reporting() )
 			{
-				echo PHP_EOL . "{" . PHP_EOL . "}Error: $message" . PHP_EOL . PHP_EOL;
+				printf( " x Error: %s in file %s line %d", $sMessage, $sFile, $nLine );
+				echo PHP_EOL . PHP_EOL;
 				exit( 1 );
 			}
 		}
@@ -46,6 +47,9 @@ namespace Dekuan\Ladep
 		const APP_NAME		= 'Ladep';
 		const FILE_NAME		= 'ladep';
 		const URL_MANIFEST	= 'https://raw.githubusercontent.com/dekuan/ladep/master/manifest.json';
+		const DIR_CONFIG	= '/etc/ladep/';
+		const DIR_BIN		= '/usr/local/bin/';
+		const FILE_BIN_F_NAME	= self::DIR_BIN . self::FILE_NAME;
 
 
 		//
@@ -77,6 +81,7 @@ namespace Dekuan\Ladep
 			);
 
 			echo " - Everything seems good!" . PHP_EOL . PHP_EOL;
+			echo PHP_EOL . PHP_EOL;
 
 			echo "Download" . PHP_EOL;
 			echo "--------------------------------------------------" . PHP_EOL . PHP_EOL;
@@ -120,20 +125,56 @@ namespace Dekuan\Ladep
 				exit();
 			}
 
+			//
+			//	fetch configuration files to /etc/ladep/
+			//
+			if ( ! $this->_FetchConfigurationFiles() )
+			{
+				unlink( $arrDlObject[ 'name' ] );
+				echo " x Failed to fetch configuration files.\n\n";
+				exit();
+			}
+
 
 			//
 			//	make executable
 			//
-			echo " - Making " . self::APP_NAME . " executable..." . PHP_EOL;
-			@ rename( $arrDlObject[ 'name' ], self::FILE_NAME );
-			@ chmod( self::FILE_NAME, 0755 );
-			@ unlink( 'installer.php' );
+			echo " - Installing " . self::APP_NAME . " to " . self::FILE_BIN_F_NAME . " ..." . PHP_EOL;
+			if ( ! $this->_InstallToBin( $arrDlObject ) )
+			{
+				@ unlink( $arrDlObject[ 'name' ] );
+				echo " x Failed to install.\n\n";
+				exit();
+			}
 
 
 			//
 			//	done
 			//
-			echo " - " . self::APP_NAME . " was installed successfully in current directory!" . PHP_EOL;
+			echo " - " . self::APP_NAME . " was installed successfully!" . PHP_EOL;
+			echo " - " . "bin file placed in " . self::FILE_BIN_F_NAME . PHP_EOL;
+			echo " - " . "configuration files placed in " . self::DIR_CONFIG . PHP_EOL;
+		}
+
+
+		//
+		//	install to bin and make it executable
+		//
+		private function _InstallToBin( $arrDlObject )
+		{
+			$bRet	= false;
+
+			if ( $this->_IsValidManifestItem( $arrDlObject ) )
+			{
+				@ rename( $arrDlObject[ 'name' ], self::FILE_BIN_F_NAME );
+				@ chmod( self::FILE_BIN_F_NAME, 0755 );
+				@ unlink( 'installer.php' );
+
+				//	...
+				$bRet = true;
+			}
+
+			return $bRet;
 		}
 
 
@@ -228,6 +269,76 @@ namespace Dekuan\Ladep
 
 			return $bRet;
 		}
+
+		//
+		//	fetch configuration files
+		//
+		public function _FetchConfigurationFiles()
+		{
+			$bRet = false;
+
+			try
+			{
+				//
+				//	create dir
+				//
+				if ( ! is_dir( self::DIR_CONFIG ) )
+				{
+					if ( mkdir( self::DIR_CONFIG ) )
+					{
+						//	...
+						$sCommand	= sprintf
+						(
+							"sudo git clone \"%s\" \"%s\" > /dev/null 2>&1",
+							"https://github.com/dekuan/ladep.config.git",
+							self::DIR_CONFIG
+						);
+						$arrOutput	= null;
+						$nReturnVar	= -1;
+						$sCall		= '';
+
+						//
+						//	try to execute the clone command
+						//
+						$sCall	= exec( $sCommand, $arrOutput, $nReturnVar );
+						if ( is_dir( sprintf( "%s%s", self::DIR_CONFIG, ".git" ) ) )
+						{
+							$bRet = true;
+						}
+					}
+					else
+					{
+						//	failed to make dir
+					}
+				}
+				else
+				{
+					//	already fetched
+					$bRet = true;
+				}
+
+				if ( $bRet )
+				{
+					$arrRemoveCommands	=
+					[
+						sprintf( "sudo rm -rf %s%s > /dev/null 2>&1", self::DIR_CONFIG, ".git" ),
+						sprintf( "sudo rm %s%s > /dev/null 2>&1", self::DIR_CONFIG, ".gitignore" ),
+						sprintf( "sudo rm %s%s > /dev/null 2>&1", self::DIR_CONFIG, "LICENSE" ),
+						sprintf( "sudo rm %s%s > /dev/null 2>&1", self::DIR_CONFIG, "README.md" ),
+					];
+					foreach ( $arrRemoveCommands as $sCommand )
+					{
+						@ system( $sCommand );
+					}
+				}
+			}
+			catch ( \Exception $e )
+			{
+			}
+
+			return $bRet;
+		}
+
 
 		//
 		//	verify file

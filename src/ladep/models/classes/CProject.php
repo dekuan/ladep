@@ -360,8 +360,8 @@ class CProject
 				if ( array_key_exists( 'user', $arrItem ) &&
 					is_string( $arrItem['user'] ) && strlen( $arrItem['user'] ) > 0 )
 				{
-					if ( array_key_exists( 'pwd', $arrItem ) && is_string( $arrItem['pwd'] ) )
-					{
+					//if ( array_key_exists( 'pwd', $arrItem ) && is_string( $arrItem['pwd'] ) )
+					//{
 						if ( array_key_exists( 'path', $arrItem ) &&
 							is_string( $arrItem['path'] ) && strlen( $arrItem['path'] ) > 0 )
 						{
@@ -371,11 +371,11 @@ class CProject
 						{
 							$sErrorSubPath = sprintf( "[%d]['path']", $nIndex );
 						}
-					}
-					else
-					{
-						$sErrorSubPath = sprintf( "[%d]['pwd']", $nIndex );
-					}
+					//}
+					//else
+					//{
+					//	$sErrorSubPath = sprintf( "[%d]['pwd']", $nIndex );
+					//}
 				}
 				else
 				{
