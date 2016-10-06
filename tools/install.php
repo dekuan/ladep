@@ -43,7 +43,7 @@ namespace Dekuan\Ladep
 	 */
 	class Installer
 	{
-		const COMPANY_NAME	= 'Dekuan, Inc.';
+		const COMPANY_NAME	= 'DeKuan, Inc.';
 		const APP_NAME		= 'Ladep';
 		const FILE_NAME		= 'ladep';
 		const URL_MANIFEST	= 'https://raw.githubusercontent.com/dekuan/ladep/master/manifest.json';

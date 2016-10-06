@@ -292,7 +292,7 @@ class CBuild
 
 
 			//
-			//	setup config database as production server
+			//	Assemble /config/database.php for production server
 			//
 			if ( $bContinue )
 			{
@@ -315,11 +315,11 @@ class CBuild
 			}
 
 			//
-			//	setup config session as production server
+			//	Assemble /config/session.php for production server
 			//
 			if ( $bContinue )
 			{
-				$bContinue = true;
+				$bContinue = false;
 				$pfnCbFunc( 'info', sprintf( "Setting up config/session.php", __CLASS__, __FUNCTION__ ) );
 				if ( $this->_SetupConfigSession( $sDirNew, $this->m_cProject, $pfnCbFunc ) )
 				{
@@ -328,9 +328,35 @@ class CBuild
 				}
 				else
 				{
-					$sFormat	= libs\Lang::Get( "error_setup_session" );
-					$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
-					$pfnCbFunc( "error", $sErrorDesc );
+					$pfnCbFunc( "info", "config/session.php was not found. That's Okay." );
+					$bContinue = true;
+
+					//$sFormat	= libs\Lang::Get( "error_setup_session" );
+					//$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
+					//$pfnCbFunc( "error", $sErrorDesc );
+				}
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( "info", "" );
+			}
+
+
+			//
+			//	Assemble /public/.htaccess for production server
+			//
+			if ( $bContinue )
+			{
+				$bContinue = false;
+				$pfnCbFunc( 'info', sprintf( "Setting up public/.htaccess if it exists", __CLASS__, __FUNCTION__ ) );
+				if ( $this->_SetupPublicHTAccess( $sDirNew, $this->m_cProject, $pfnCbFunc ) )
+				{
+					$pfnCbFunc( "info", "public/.htaccess was set up successfully." );
+					$bContinue = true;
+				}
+				else
+				{
+					$pfnCbFunc( "info", "public/.htaccess was not found. That's Okay." );
+					$bContinue = true;
 				}
 				$pfnCbFunc( "info", "" );
 				$pfnCbFunc( "info", "" );
@@ -813,6 +839,13 @@ class CBuild
 		$cSetup	= new classes\CSetup();
 		return $cSetup->SetupConfigSession( $sReleaseDir, $cProject, $pfnCbFunc );
 	}
+
+	private function _SetupPublicHTAccess( $sReleaseDir, classes\CProject $cProject, callable $pfnCbFunc )
+	{
+		$cSetup	= new classes\CSetup();
+		return $cSetup->SetupPublicHTAccess( $sReleaseDir, $cProject, $pfnCbFunc );
+	}
+
 
 	private function _SetupHttpErrorsPage( $sReleaseDir, callable $pfnCbFunc )
 	{
