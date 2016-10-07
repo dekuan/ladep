@@ -15,7 +15,10 @@ ladep.phar.pubkey
 yuicompressor*
 
 xsdepdata
+
+.DS_Store
 src/ladep/.DS_Store
+
 
 
 
