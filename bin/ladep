@@ -3,7 +3,7 @@
 
 if ( 'cli' !== PHP_SAPI )
 {
-	echo 'Warning: xsdep should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI' . PHP_EOL;
+	echo 'Warning: ladep should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI' . PHP_EOL;
 }
 
 
