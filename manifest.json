@@ -52,5 +52,11 @@
 		"sha1"		: "9cc715a9c2b8dedd216f094b31badf910dcca3ad",
 		"url"		: "https://github.com/dekuan/ladep/raw/1.0.10/ladep.phar",
 		"version"	: "1.0.10"
+	},
+	{
+		"name"		: "ladep.phar",
+		"sha1"		: "f10a7b5761681ecbb722b3b2c73e1a3a440b4983",
+		"url"		: "https://github.com/dekuan/ladep/raw/1.0.11/ladep.phar",
+		"version"	: "1.0.11"
 	}
 ]
