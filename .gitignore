@@ -7,6 +7,7 @@
 
 /tools/ladep
 /tools/ladep.phar
+/ladep.d
 
 composer.lock
 box.json
@@ -17,7 +18,7 @@ ladep.phar.pubkey
 xsdepdata
 
 .DS_Store
-src/ladep/.DS_Store
+/src/ladep/.DS_Store
 
 
 

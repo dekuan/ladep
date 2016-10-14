@@ -113,7 +113,7 @@ class CProjectFiles
 				$oDir = null;
 			}
 		}
-		catch ( Exception $e )
+		catch ( \Exception $e )
 		{
 			throw $e;
 		}

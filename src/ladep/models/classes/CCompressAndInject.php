@@ -24,10 +24,12 @@ class CCompressAndInject
 		}
 		if ( ! is_string( $sProjectName ) || 0 == strlen( $sProjectName ) )
 		{
+			libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "# invalid parameter sProjectName : " . __FUNCTION__ );
 			return false;
 		}
 		if ( ! is_string( $sVer ) || 0 == strlen( $sVer ) )
 		{
+			libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "# invalid parameter sVer : " . __FUNCTION__ );
 			return false;
 		}
 
@@ -84,12 +86,12 @@ class CCompressAndInject
 			}
 			else
 			{
-				$pfnCbFunc( 'comment', "# invalid web public dir" );
+				libs\Lib::PrintByCallback( $pfnCbFunc, 'comment', "# invalid web public dir" );
 			}
 		}
 		else
 		{
-			$pfnCbFunc( 'comment', "# invalid web view dir" );
+			libs\Lib::PrintByCallback( $pfnCbFunc, 'comment', "# invalid web view dir" );
 		}
 
 		return $bRet;
@@ -98,24 +100,28 @@ class CCompressAndInject
 
 	private function _CreateCompressedView( $sProjectName, $sVer, $sViewFullFilename, $sWebRootDir, $arrOptions, callable $pfnCbFunc )
 	{
-		if ( ! is_string( $sProjectName ) || 0 == strlen( $sProjectName ) )
-		{
-			return false;
-		}
-		if ( ! is_string( $sVer ) || 0 == strlen( $sVer ) )
-		{
-			return false;
-		}
 		if ( ! is_callable( $pfnCbFunc ) )
 		{
 			return false;
 		}
+		if ( ! is_string( $sProjectName ) || 0 == strlen( $sProjectName ) )
+		{
+			libs\Lib::PrintByCallback( $pfnCbFunc, 'comment', "# invalid parameter sProjectName" );
+			return false;
+		}
+		if ( ! is_string( $sVer ) || 0 == strlen( $sVer ) )
+		{
+			libs\Lib::PrintByCallback( $pfnCbFunc, 'comment', "# invalid parameter sVer" );
+			return false;
+		}
 		if ( ! is_string( $sViewFullFilename ) || ! is_file( $sViewFullFilename ) )
 		{
+			libs\Lib::PrintByCallback( $pfnCbFunc, 'comment', "# invalid parameter sViewFullFilename" );
 			return false;
 		}
 		if ( ! is_string( $sWebRootDir ) || ! is_dir( $sWebRootDir ) )
 		{
+			libs\Lib::PrintByCallback( $pfnCbFunc, 'comment', "# invalid parameter sWebRootDir" );
 			return false;
 		}
 

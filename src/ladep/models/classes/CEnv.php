@@ -49,10 +49,18 @@ class CEnv
 	{
 		if ( ! is_string( $sSrcFullFilename ) || 0 == strlen( $sSrcFullFilename ) || ! is_file( $sSrcFullFilename ) )
 		{
+			if ( is_callable( $pfnCbFunc ) )
+			{
+				$pfnCbFunc( "info", "Source file[$sSrcFullFilename] is invalid." );
+			}
 			return false;
 		}
 		if ( ! is_string( $sDstFullFilename ) || 0 == strlen( $sDstFullFilename ) )
 		{
+			if ( is_callable( $pfnCbFunc ) )
+			{
+				$pfnCbFunc( "info", "destination file is invalid." );
+			}
 			return false;
 		}
 

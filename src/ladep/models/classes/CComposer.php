@@ -112,7 +112,7 @@ class CComposer
 				}
 			}
 		}
-		catch ( Exception $e )
+		catch ( \Exception $e )
 		{
 			//	throw
 			if ( is_callable( $pfnCbFunc ) )

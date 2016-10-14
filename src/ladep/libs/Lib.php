@@ -2,11 +2,25 @@
 
 namespace dekuan\ladep\libs;
 
+use dekuan\delib\CLib;
+
 
 class Lib
 {
 	protected static $g_arrStaticRequiredFile	= [];
 
+
+	static function PrintByCallback( callable $pfnCbFunc, $sType, $sMsg )
+	{
+		if ( ! is_callable( $pfnCbFunc ) ||
+			! CLib::IsExistingString( $sType ) ||
+			! CLib::IsExistingString( $sMsg ) )
+		{
+			return false;
+		}
+
+		$pfnCbFunc( $sType, $sMsg );
+	}
 
 	static function IsValidUrl( $sUrl )
 	{
@@ -162,7 +176,7 @@ class Lib
 		//	...
 		return sprintf
 		(
-			"%s/%s/",
+			"%s/%s",
 			self::RTrimPath( self::GetPharRootDir() ),
 			self::TrimPath( $sSubPath )
 		);
@@ -269,7 +283,7 @@ class Lib
 				$oDir = null;
 			}
 		}
-		catch ( Exception $e )
+		catch ( \Exception $e )
 		{
 			throw $e;
 		}
@@ -334,7 +348,7 @@ class Lib
 				$bRet = @ rmdir( $sDir );
 			}
 		}
-		catch ( Exception $e )
+		catch ( \Exception $e )
 		{
 			throw $e;
 		}
@@ -405,7 +419,7 @@ class Lib
 		//		$bRet = @ rmdir( $sDir );
 		//	}
 		}
-		catch ( Exception $e )
+		catch ( \Exception $e )
 		{
 			throw $e;
 		}
@@ -477,7 +491,7 @@ class Lib
 		//	}
 
 		}
-		catch ( Exception $e )
+		catch ( \Exception $e )
 		{
 			throw $e;
 		}

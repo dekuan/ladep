@@ -2,7 +2,7 @@
 
 namespace dekuan\ladep\models\classes;
 
-use Illuminate\Support\Facades\Config;
+//use Illuminate\Support\Facades\Config;
 use Symfony\Component\Process;
 
 use dekuan\ladep\libs;
@@ -38,12 +38,16 @@ class CSSHCmdPullLogs extends CSSHCmd
 		//	pfnCbFunc	- [in] callable
 		//	RETURN		- true / false
 		//
-
-		if ( ! is_array( $arrSrvList ) || 0 == count( $arrSrvList ) || ! is_callable( $pfnCbFunc ) )
+		if ( ! is_array( $arrSrvList ) || 0 == count( $arrSrvList ) )
 		{
-			$pfnCbFunc( 'error', "Invalid server list." );
+			libs\Lib::PrintByCallback( $pfnCbFunc, 'error', "Invalid server list." );
 			return false;
 		}
+		if ( ! is_callable( $pfnCbFunc ) )
+		{
+			return false;
+		}
+
 
 		//	...
 		$bRet = false;
