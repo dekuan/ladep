@@ -128,18 +128,19 @@ class CCompressor
 		$sRet = '';
 
 		//	...
-		$sWorkingRootDir	= libs\Lib::GetLocalWorkingRootDir();
-		$sWorkingJarFFN		= sprintf( "%s/%s", libs\Lib::RTrimPath( $sWorkingRootDir ), $sFilename );
-		if ( is_file( $sWorkingJarFFN ) )
+		//$sCompressorDir	= libs\Lib::GetLocalWorkingRootDir();
+		$sCompressorDir		= sys_get_temp_dir();
+		$sCompressorJarFFN	= sprintf( "%s/%s", libs\Lib::RTrimPath( $sCompressorDir ), $sFilename );
+		if ( is_file( $sCompressorJarFFN ) )
 		{
-			$sRet = $sWorkingJarFFN;
+			$sRet = $sCompressorJarFFN;
 		}
 		else
 		{
 			$sPharFFN = libs\Lib::GetFullPath( "/tools/$sFilename" );
-			if ( false !== file_put_contents( $sWorkingJarFFN, @ file_get_contents( $sPharFFN ) ) )
+			if ( false !== file_put_contents( $sCompressorJarFFN, @ file_get_contents( $sPharFFN ) ) )
 			{
-				$sRet = $sWorkingJarFFN;
+				$sRet = $sCompressorJarFFN;
 			}
 		}
 

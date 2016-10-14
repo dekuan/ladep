@@ -123,27 +123,17 @@ class CSetup
 	{
 		if ( ! is_string( $sFilename ) || 0 == strlen( $sFilename ) )
 		{
-			if ( is_callable( $pfnCbFunc ) )
-			{
-				$pfnCbFunc( "comment", "\t\t  # Invalid config filename[$sConfigFilename]" );
-			}
+			libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "\t\t  # Invalid filename : " . $sFilename );
 			return CConst::ERROR_PARAMETER;
 		}
 		if ( ! is_string( $sReleaseDir ) || ! is_dir( $sReleaseDir ) )
 		{
-			if ( is_callable( $pfnCbFunc ) )
-			{
-				$pfnCbFunc( "comment", "\t\t  # Invalid Release Dir[$sReleaseDir]" );
-			}
+			libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "\t\t  # Invalid Release Dir : " . $sReleaseDir );
 			return CConst::ERROR_PARAMETER;
 		}
 		if ( ! $cProject instanceof CProject )
 		{
-
-			if ( is_callable( $pfnCbFunc ) )
-			{
-				$pfnCbFunc( "comment", "\t\t  # Invalid instanceof of [cProject]" );
-			}
+			libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "\t\t  # Invalid instanceof of [cProject]" );
 			return CConst::ERROR_PARAMETER;
 		}
 
@@ -185,19 +175,13 @@ class CSetup
 						else
 						{
 							$nRet = constants\CUConsts::CONST_ERROR_FAILED_COPY_FILE;
-							if ( is_callable( $pfnCbFunc ) )
-							{
-								$pfnCbFunc( "comment", "\t\t  # failed in copying file." );
-							}
+							libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "\t\t  # failed in copying file." );
 						}
 					}
 					else
 					{
 						$nRet = constants\CUConsts::CONST_ERROR_FILE_NOT_EXIST;
-						if ( is_callable( $pfnCbFunc ) )
-						{
-							$pfnCbFunc( "comment", "\t\t  # source file[$sSrc] does not exists." );
-						}
+						libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "\t\t  # source file does not exists : " . $sSrc );
 					}
 				}
 				else if ( 0 == strcasecmp( 'ssh', $sType ) )
@@ -206,28 +190,19 @@ class CSetup
 					//	todo
 					//	copy files via ssh
 					//
-					if ( is_callable( $pfnCbFunc ) )
-					{
-						$pfnCbFunc( "comment", "\t\t  # copying file via SSH is now not supportted." );
-					}
+					libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "\t\t  # copying file via SSH is now not supported." );
 				}
 			}
 			else
 			{
 				$nRet = constants\CUConsts::CONST_ERROR_CONFIG;
-				if ( is_callable( $pfnCbFunc ) )
-				{
-					$pfnCbFunc( "comment", "\t\t  # error in arrSrvConfig" );
-				}
+				libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "\t\t  # error in arrSrvConfig" );
 			}
 		}
 		else
 		{
 			$nRet = constants\CUConsts::CONST_ERROR_CONFIG;
-			if ( is_callable( $pfnCbFunc ) )
-			{
-				$pfnCbFunc( "comment", "\t\t  # error in name" );
-			}
+			libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "\t\t  # error in name" );
 		}
 
 		return $nRet;
@@ -237,6 +212,7 @@ class CSetup
 	{
 		if ( ! is_string( $sReleaseDir ) || ! is_dir( $sReleaseDir ) )
 		{
+			libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "\t\t  # invalid ReleaseDir : " . __FUNCTION__ );
 			return false;
 		}
 
@@ -258,10 +234,7 @@ class CSetup
 				{
 					if ( copy( $sSrcFFN, $sDstFFN ) )
 					{
-						if ( is_callable( $pfnCbFunc ) )
-						{
-							$pfnCbFunc( "info", "Create error page successfully: " . $sDstSubFile );
-						}
+						libs\Lib::PrintByCallback( $pfnCbFunc, "info", "Create error page successfully: " . $sDstSubFile );
 					}
 					else
 					{
@@ -270,30 +243,20 @@ class CSetup
 						//
 						$bRet = false;
 
-						if ( is_callable( $pfnCbFunc ) )
-						{
-							$pfnCbFunc( "error", "Create error page unsuccessfully: " . $sDstSubFile );
-						}
+						libs\Lib::PrintByCallback( $pfnCbFunc, "error", "Create error page unsuccessfully: " . $sDstSubFile );
 					}
 				}
 				else
 				{
-					if ( is_callable( $pfnCbFunc ) )
-					{
-						$pfnCbFunc( "comment", "error page already exists : " . $sDstSubFile );
-					}
+					libs\Lib::PrintByCallback( $pfnCbFunc, "comment", "error page already exists : " . $sDstSubFile );
 				}
 			}
 		}
 		else
 		{
-			if ( is_callable( $pfnCbFunc ) )
-			{
-				$pfnCbFunc( "error", "Failed to load the list of http error pages." );
-			}
+			libs\Lib::PrintByCallback( $pfnCbFunc, "error", "Failed to load the list of http error pages." );
 		}
 
 		return $bRet;
 	}
-
 }
