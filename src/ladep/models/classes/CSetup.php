@@ -103,14 +103,27 @@ class CSetup
 	{
 		if ( ! is_string( $sConfigFilename ) || 0 == strlen( $sConfigFilename ) )
 		{
+			if ( is_callable( $pfnCbFunc ) )
+			{
+				$pfnCbFunc( "comment", "\t\t  # Invalid config filename[$sConfigFilename]" );
+			}
 			return CConst::ERROR_PARAMETER;
 		}
 		if ( ! is_string( $sReleaseDir ) || ! is_dir( $sReleaseDir ) )
 		{
+			if ( is_callable( $pfnCbFunc ) )
+			{
+				$pfnCbFunc( "comment", "\t\t  # Invalid Release Dir[$sReleaseDir]" );
+			}
 			return CConst::ERROR_PARAMETER;
 		}
 		if ( ! $cProject instanceof CProject )
 		{
+
+			if ( is_callable( $pfnCbFunc ) )
+			{
+				$pfnCbFunc( "comment", "\t\t  # Invalid instanceof of [cProject]" );
+			}
 			return CConst::ERROR_PARAMETER;
 		}
 
@@ -146,11 +159,19 @@ class CSetup
 						else
 						{
 							$nRet = constants\CUConsts::CONST_ERROR_FAILED_COPY_FILE;
+							if ( is_callable( $pfnCbFunc ) )
+							{
+								$pfnCbFunc( "comment", "\t\t  # failed in copying file." );
+							}
 						}
 					}
 					else
 					{
 						$nRet = constants\CUConsts::CONST_ERROR_FILE_NOT_EXIST;
+						if ( is_callable( $pfnCbFunc ) )
+						{
+							$pfnCbFunc( "comment", "\t\t  # source file[$sSrc] does not exists." );
+						}
 					}
 				}
 				else if ( 0 == strcasecmp( 'ssh', $sType ) )
@@ -159,6 +180,10 @@ class CSetup
 					//	todo
 					//	copy files via ssh
 					//
+					if ( is_callable( $pfnCbFunc ) )
+					{
+						$pfnCbFunc( "comment", "\t\t  # copying file via SSH is now not supportted." );
+					}
 				}
 			}
 			else

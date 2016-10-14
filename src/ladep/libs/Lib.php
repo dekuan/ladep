@@ -162,7 +162,7 @@ class Lib
 		//	...
 		return sprintf
 		(
-			"%s/%s/",
+			"%s/%s",
 			self::RTrimPath( self::GetPharRootDir() ),
 			self::TrimPath( $sSubPath )
 		);

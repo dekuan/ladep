@@ -7,6 +7,7 @@
 
 /tools/ladep
 /tools/ladep.phar
+/ladep.d
 
 composer.lock
 box.json
