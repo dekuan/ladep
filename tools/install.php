@@ -15,11 +15,12 @@ namespace
 	//	...
 	set_error_handler
 	(
-		function( $code, $message, $file, $line )
+		function( $nCode, $sMessage, $sFile, $nLine )
 		{
-			if ( $code & error_reporting() )
+			if ( $nCode & error_reporting() )
 			{
-				echo PHP_EOL . "{" . PHP_EOL . "}Error: $message" . PHP_EOL . PHP_EOL;
+				printf( " x Error: %s in file %s line %d", $sMessage, $sFile, $nLine );
+				echo PHP_EOL . PHP_EOL;
 				exit( 1 );
 			}
 		}
@@ -42,23 +43,33 @@ namespace Dekuan\Ladep
 	 */
 	class Installer
 	{
-		const COMPANY_NAME	= 'Dekuan, Inc.';
+		const COMPANY_NAME	= 'DeKuan, Inc.';
 		const APP_NAME		= 'Ladep';
 		const FILE_NAME		= 'ladep';
 		const URL_MANIFEST	= 'https://raw.githubusercontent.com/dekuan/ladep/master/manifest.json';
+		const DIR_CONFIG	= '/etc/ladep/';
+		const DIR_BIN		= '/usr/local/bin/';
+		const FILE_BIN_F_NAME	= self::DIR_BIN . self::FILE_NAME;
 
+		private $m_sCurrentUserName;
+		private $m_sCurrentGroupName;
+
+
+		public function __construct()
+		{
+			$this->_Init();
+		}
 
 		//
 		//	install
 		//
 		public function Install()
 		{
-			//echo self::APP_NAME . " by " . self::COMPANY_NAME . " Installer", PHP_EOL;
-			echo "==================================================", PHP_EOL, PHP_EOL;
-
 			$this->_PrintHeader();
 
-
+			//
+			//	...
+			//
 			echo "Environment Check", PHP_EOL;
 			echo "--------------------------------------------------", PHP_EOL, PHP_EOL;
 
@@ -71,6 +82,15 @@ namespace Dekuan\Ladep
 			//
 			$this->_Check
 			(
+				'You are running this script as root.',
+				'You must run this script as root or with sudo.',
+				function()
+				{
+					return ( 0 == posix_getuid() );
+				}
+			);
+			$this->_Check
+			(
 				'You have a supported version of PHP (>= 5.3.3).',
 				'You need PHP 5.3.3 or greater.',
 				function()
@@ -79,7 +99,10 @@ namespace Dekuan\Ladep
 				}
 			);
 
+
+
 			echo " - Everything seems good!" . PHP_EOL . PHP_EOL;
+			echo PHP_EOL . PHP_EOL;
 
 			echo "Download" . PHP_EOL;
 			echo "--------------------------------------------------" . PHP_EOL . PHP_EOL;
@@ -123,20 +146,55 @@ namespace Dekuan\Ladep
 				exit();
 			}
 
+			//
+			//	fetch configuration files to /etc/ladep/
+			//
+			if ( ! $this->_FetchConfigurationFiles() )
+			{
+				unlink( $arrDlObject[ 'name' ] );
+				echo " x Failed to fetch configuration files.\n\n";
+				exit();
+			}
+
 
 			//
 			//	make executable
 			//
-			echo " - Making " . self::APP_NAME . " executable..." . PHP_EOL;
-			@ rename( $arrDlObject[ 'name' ], self::FILE_NAME );
-			@ chmod( self::FILE_NAME, 0755 );
-			@ unlink( 'installer.php' );
+			echo " - Installing " . self::APP_NAME . " to bin directory ..." . PHP_EOL;
+			if ( ! $this->_InstallToBin( $arrDlObject ) )
+			{
+				@ unlink( $arrDlObject[ 'name' ] );
+				echo " x Failed to install.\n\n";
+				exit();
+			}
 
 
 			//
 			//	done
 			//
-			echo " - " . self::APP_NAME . " was installed successfully in current directory!" . PHP_EOL;
+			echo " - " . self::APP_NAME . " was installed successfully!" . PHP_EOL;
+			echo " - " . "bin file placed in " . self::FILE_BIN_F_NAME . PHP_EOL;
+			echo " - " . "configuration files placed in " . self::DIR_CONFIG . PHP_EOL;
+		}
+
+
+
+		//
+		//	init
+		//
+		private function _Init()
+		{
+			$arrUserInfo	= @ posix_getpwuid( @ posix_getuid() );
+			$arrGroupInfo	= @ posix_getgrgid( @ posix_getgid() );
+
+			if ( is_array( $arrUserInfo ) && array_key_exists( 'name', $arrUserInfo ) )
+			{
+				$this->m_sCurrentUserName	= $arrUserInfo[ 'name' ];
+			}
+			if ( is_array( $arrGroupInfo ) && array_key_exists( 'name', $arrGroupInfo ) )
+			{
+				$this->m_sCurrentGroupName	= $arrGroupInfo[ 'name' ];
+			}
 		}
 
 
@@ -145,6 +203,8 @@ namespace Dekuan\Ladep
 		//
 		private function _PrintHeader()
 		{
+			//echo self::APP_NAME . " by " . self::COMPANY_NAME . " Installer", PHP_EOL;
+			echo "==================================================", PHP_EOL, PHP_EOL;
 			echo "        _______ ______  _______  _____" . PHP_EOL,
 			" |      |_____| |     \ |______ |_____]" . PHP_EOL,
 			" |_____ |     | |_____/ |______ |" . PHP_EOL,
@@ -196,7 +256,7 @@ namespace Dekuan\Ladep
 		//
 		//	download file
 		//
-		public function _DownloadFile( $arrDlObject )
+		private function _DownloadFile( $arrDlObject )
 		{
 			$bRet	= false;
 			$nDl	= false;
@@ -231,9 +291,126 @@ namespace Dekuan\Ladep
 		}
 
 		//
+		//	install to bin and make it executable
+		//
+		private function _InstallToBin( $arrDlObject )
+		{
+			$bRet	= false;
+
+			if ( $this->_IsValidManifestItem( $arrDlObject ) )
+			{
+				@ rename( $arrDlObject[ 'name' ], self::FILE_BIN_F_NAME );
+				@ chmod( self::FILE_BIN_F_NAME, 0755 );
+				@ unlink( 'installer.php' );
+
+				//	...
+				$bRet = true;
+			}
+
+			return $bRet;
+		}
+		private function _ChangeOwner()
+		{
+			if ( is_string( $this->m_sCurrentUserName ) && is_string( $this->m_sCurrentGroupName ) )
+			{
+				//
+				//	chown
+				//
+				$sCmd = sprintf
+				(
+					"sudo chown -R %s:%s \"%s\" > /dev/null 2>&1",
+					$this->m_sCurrentUserName,
+					$this->m_sCurrentGroupName,
+					self::DIR_CONFIG
+				);
+				@ exec( $sCmd );
+
+				$sCmd = sprintf
+				(
+					"sudo chown %s:%s \"%s\" > /dev/null 2>&1",
+					$this->m_sCurrentUserName,
+					$this->m_sCurrentGroupName,
+					self::FILE_BIN_F_NAME
+				);
+				@ exec( $sCmd );
+			}
+		}
+
+
+		//
+		//	fetch configuration files
+		//
+		private function _FetchConfigurationFiles()
+		{
+			$bRet = false;
+
+			try
+			{
+				//
+				//	create dir
+				//
+				if ( ! is_dir( self::DIR_CONFIG ) )
+				{
+					if ( mkdir( self::DIR_CONFIG ) )
+					{
+						//	...
+						$sCommand	= sprintf
+						(
+							"sudo git clone \"%s\" \"%s\" > /dev/null 2>&1",
+							"https://github.com/dekuan/ladep.config.git",
+							self::DIR_CONFIG
+						);
+						$arrOutput	= null;
+						$nReturnVar	= -1;
+						$sCall		= '';
+
+						//
+						//	try to execute the clone command
+						//
+						$sCall	= exec( $sCommand, $arrOutput, $nReturnVar );
+						if ( is_dir( sprintf( "%s%s", self::DIR_CONFIG, ".git" ) ) )
+						{
+							$bRet = true;
+						}
+					}
+					else
+					{
+						//	failed to make dir
+					}
+				}
+				else
+				{
+					//	already fetched
+					$bRet = true;
+				}
+
+				if ( $bRet )
+				{
+					$arrRemoveCommands	=
+					[
+						sprintf( "sudo rm -rf %s%s > /dev/null 2>&1", self::DIR_CONFIG, ".git" ),
+						sprintf( "sudo rm %s%s > /dev/null 2>&1", self::DIR_CONFIG, ".gitignore" ),
+						sprintf( "sudo rm %s%s > /dev/null 2>&1", self::DIR_CONFIG, "LICENSE" ),
+						sprintf( "sudo rm %s%s > /dev/null 2>&1", self::DIR_CONFIG, "README.md" ),
+					];
+					foreach ( $arrRemoveCommands as $sCommand )
+					{
+						@ system( $sCommand );
+					}
+				}
+			}
+			catch ( \Exception $e )
+			{
+			}
+
+			return $bRet;
+		}
+
+
+		//
 		//	verify file
 		//
-		public function _VerifyFileBySha( $arrDlObject )
+		private function _VerifyFileBySha( $arrDlObject )
 		{
 			$bRet	= false;
 
@@ -251,7 +428,7 @@ namespace Dekuan\Ladep
 		//
 		//	verify file by Phar
 		//
-		public function _VerifyFileByPhar( $arrDlObject )
+		private function _VerifyFileByPhar( $arrDlObject )
 		{
 			$bRet	= false;
 
@@ -278,7 +455,7 @@ namespace Dekuan\Ladep
 		//
 		//	Checks a condition, outputs a message, and exits if failed.
 		//
-		public function _Check( $sMsgSuccess, $sMsgFailure, $pfnCondition, $bExit = true )
+		private function _Check( $sMsgSuccess, $sMsgFailure, $pfnCondition, $bExit = true )
 		{
 			//
 			//	sMsgSuccess	the success message.

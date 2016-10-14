@@ -13,9 +13,12 @@ composer.lock
 box.json
 private.key
 ladep.phar.pubkey
-yuicompressor*
+/yuicompressor*
 
 xsdepdata
+
+.DS_Store
+/src/ladep/.DS_Store
 
 
 

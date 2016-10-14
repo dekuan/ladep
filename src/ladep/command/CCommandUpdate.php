@@ -11,16 +11,21 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use dekuan\ladep\libs;
+
+
+
 
 class CCommandUpdate extends Command
 {
-	const MANIFEST_FILE = 'https://github.com/dekuan/ladep/raw/master/manifest.json';
+	const MANIFEST_FILE = 'https://raw.githubusercontent.com/dekuan/ladep/master/manifest.json';
+
 
 	protected function configure()
 	{
 		$this
-			->setName( 'update' )
-			->setDescription( 'Updates me to the latest version' )
+			->setName( 'selfupdate' )
+			->setDescription( 'Update me to the latest version.' )
 			->addOption( 'major', null, InputOption::VALUE_NONE, 'Allow major version update' )
 		;
 	}
@@ -28,28 +33,41 @@ class CCommandUpdate extends Command
 	{
 		$cManager	= null;
 
+		//
+		//	Print header
+		//
+		libs\MainApp::PrintHeader();
+
+
 		//	...
+		$cOutput->writeln( '' );
 		$cOutput->writeln( 'Looking for updates...' );
 
 		try
 		{
 			$cManager = new Manager( Manifest::loadFile( self::MANIFEST_FILE ) );
+
+			//	...
+			$sCurrentVersion	= $this->getApplication()->getVersion();
+			$sAllowMajor		= $cInput->getOption( 'major' );
+			if ( $cManager->update( $sCurrentVersion, $sAllowMajor ) )
+			{
+				$cOutput->writeln( '<info>Updated to latest version successfully.</info>' );
+			}
+			else
+			{
+				$cOutput->writeln( '<comment>Already up-to-date.</comment>' );
+			}
 		}
 		catch ( FileException $e )
 		{
-			$cOutput->writeln( '<error>Unable to search for updates</error>' );
+			$cOutput->writeln( '<error>Unable to search for updates.</error>' );
 			return 1;
 		}
 
-		$sCurrentVersion	= $this->getApplication()->getVersion();
-		$sAllowMajor		= $cInput->getOption( 'major' );
-		if ( $cManager->update( $sCurrentVersion, $sAllowMajor ) )
-		{
-			$cOutput->writeln( '<info>Updated to latest version</info>' );
-		}
-		else
-		{
-			$cOutput->writeln( '<comment>Already up-to-date</comment>' );
-		}
+		//	...
+		$cOutput->writeln( '' );
+		$cOutput->writeln( '' );
+		$cOutput->writeln( '' );
 	}
 }

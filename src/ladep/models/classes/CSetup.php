@@ -49,6 +49,17 @@ class CSetup
 	{
 		return $this->_SetupConfigSessionAsLocal( $sReleaseDir, $cProject, $pfnCbFunc );
 	}
+
+
+	public function SetupPublicHTAccess( $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
+	{
+		//
+		//	copy file .htaccess to /public/.htaccess
+		//
+		return ( CConst::ERROR_SUCCESS == $this->_SetupPublicFile( '.htaccess', $sReleaseDir, $cProject, $pfnCbFunc ) );
+	}
+
+
 	public function SetupHttpErrorsPage( $sReleaseDir, callable $pfnCbFunc = null )
 	{
 		return $this->_SetupHttpErrorsPage( $sReleaseDir, $pfnCbFunc );
@@ -101,7 +112,16 @@ class CSetup
 
 	private function _SetupConfigFile( $sConfigFilename, $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
 	{
-		if ( ! is_string( $sConfigFilename ) || 0 == strlen( $sConfigFilename ) )
+		return $this->_SetupFile( 'config', $sConfigFilename, $sReleaseDir, $cProject, $pfnCbFunc );
+	}
+	private function _SetupPublicFile( $sPublicFilename, $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
+	{
+		//	.htaccess
+		return $this->_SetupFile( 'public', $sPublicFilename, $sReleaseDir, $cProject, $pfnCbFunc );
+	}
+	private function _SetupFile( $sDestDirName, $sFilename, $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
+	{
+		if ( ! is_string( $sFilename ) || 0 == strlen( $sFilename ) )
 		{
 			if ( is_callable( $pfnCbFunc ) )
 			{
@@ -145,8 +165,14 @@ class CSetup
 
 				if ( 0 == strcasecmp( 'file', $sType ) )
 				{
-					$sSrc	= sprintf( "%s/%s", $sUrl, $sConfigFilename );
-					$sDst	= sprintf( "%s/config/%s", $sReleaseDir, $sConfigFilename );
+					$sSrc	= sprintf( "%s/%s", $sUrl, $sFilename );
+					$sDst	= sprintf
+					(
+						"%s/%s%s",
+						$sReleaseDir,
+						( ( is_string( $sDestDirName ) && strlen( $sDestDirName ) > 0 ) ? ( trim( $sDestDirName ) . "/" ) : "" ),
+						$sFilename
+					);
 					if ( is_file( $sSrc ) )
 					{
 						if ( copy( $sSrc, $sDst ) )

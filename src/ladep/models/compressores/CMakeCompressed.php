@@ -40,7 +40,7 @@ class CMakeCompressed
 	//
 	//	ladep="1"
 	//
-	const CONST_REGX_LADEP		= "/ladep|xsdep[ ]*=[ ]*[\"']{0,1}[ ]*1[ ]*[\"']{0,1}/i";
+	const CONST_REGX_LADEP		= "/ladep[ ]*=[ ]*[\"']{0,1}[ ]*1[ ]*[\"']{0,1}/i";
 
 	//	<script src="{{asset('/js/xslib.js')}}" ladep="1"></script>
 	const CONST_REGX_SCRIPT		= "/<script.*?" .
