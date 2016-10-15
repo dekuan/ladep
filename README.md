@@ -8,12 +8,14 @@ Ladep is the world's best deployer for Laravel framework. It's the best way to d
 ### INSTALL
 
 ##### Via CURL
-
+<div>
 $ curl -LSs https://raw.githubusercontent.com/dekuan/ladep/master/tools/install.php | sudo php
+</div>
 
 ##### Via WGET
-
+<div>
 $ wget https://raw.githubusercontent.com/dekuan/ladep/master/tools/install.php -O - | sudo php
+</div>
 
 <br />
 <br />
