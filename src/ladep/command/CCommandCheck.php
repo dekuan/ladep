@@ -131,7 +131,7 @@ EOT
 
 		//	...
 		//$cOutput->writeln( "<info>----------------------------------------------------------------------</info>" );
-		$cOutput->writeln( "<info>Try to list all released versions on server(s), please wait for a while ...</info>" );
+		$cOutput->writeln( "<info>Try to check your website, please wait for a while ...</info>" );
 		$cOutput->writeln( "" );
 
 		return true;
