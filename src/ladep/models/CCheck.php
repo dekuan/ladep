@@ -121,6 +121,10 @@ class CCheck
 						{
 							$pfnCbFunc( 'comment', sprintf( "\t\t# Website is not available, status code is %d.", $nStatusCode ) );
 						}
+
+						//	...
+						sleep( 1 );
+						$this->_StopCheckService( $pfnCbFunc );
 					}
 					else
 					{
