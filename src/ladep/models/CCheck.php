@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use dekuan\vdata;
+
 use dekuan\ladep\libs;
 use dekuan\ladep\models\classes;
 
@@ -21,11 +21,6 @@ use dekuan\ladep\models\classes;
  */
 class CCheck
 {
-	//	...
-	const CONST_CHECK_SERVER_NAME	= 'LADEP CHECK WEB SERVICE';
-	const CONST_CHECK_SERVER_HOST	= '127.0.0.1';	//	server host
-	const CONST_CHECK_SERVER_PORT	= 9916;		//	server port
-
 	//	...
 	private $m_cProject	= null;
 
@@ -44,6 +39,7 @@ class CCheck
 		$sErrorDesc	= '';
 		$sErrorPath	= '';
 		$cGit		= new classes\CGit();
+		$cMiniSrv	= classes\CMiniServer::GetInstance();
 
 
 		if ( ! is_callable( $pfnCbFunc ) )
@@ -97,43 +93,34 @@ class CCheck
 
 			if ( is_string( $sReleaseDir ) && is_dir( $sReleaseDir ) )
 			{
+				//
+				//	try to stop mini http server
+				//
+				$cMiniSrv->SafeRestart( $sReleaseDir, $pfnCbFunc );
+
 				//	...
-				if ( $this->_IsCheckServerListening() )
-				{
-					$this->_StopCheckService( $pfnCbFunc );
-				}
+				usleep( 1000 );
 
-				if ( ! $this->_IsCheckServerListening() )
+				if ( $cMiniSrv->IsListening() )
 				{
-					if ( $this->_StartCheckService( $sReleaseDir, $pfnCbFunc ) )
+					$pfnCbFunc( 'info', sprintf( "\t\t: Access: %s", $cMiniSrv->GetServerUrl() ) );
+
+					$nStatusCode	= 0;
+					if ( $cMiniSrv->IsWebAvailable( $nStatusCode ) )
 					{
-						sleep( 3 );
-
-						$nStatusCode	= 0;
-						if ( $this->_IsWebsiteAvailable( $nStatusCode ) )
-						{
-							$nRet = 0;
-
-							//	...
-							$pfnCbFunc( 'info', "\t\t: Website works well!" );
-						}
-						else
-						{
-							$pfnCbFunc( 'comment', sprintf( "\t\t# Website is not available, status code is %d.", $nStatusCode ) );
-						}
+						$nRet = 0;
 
 						//	...
-						sleep( 1 );
-						$this->_StopCheckService( $pfnCbFunc );
+						$pfnCbFunc( 'info', "\t\t: Website works well!" );
 					}
 					else
 					{
-						$pfnCbFunc( 'error', "\t\t# Failed to start check web service." );
+						$pfnCbFunc( 'comment', sprintf( "\t\t# Website is not available, status code is %d.", $nStatusCode ) );
 					}
 				}
 				else
 				{
-					$pfnCbFunc( 'error', sprintf( "\t\t# Port %d already in use.", self::CONST_CHECK_SERVER_PORT ) );
+					$pfnCbFunc( 'error', sprintf( "\t\t# Failed to start %s", $cMiniSrv->GetServerName() ) );
 				}
 			}
 			else
@@ -162,159 +149,5 @@ class CCheck
 	////////////////////////////////////////////////////////////////////////////////
 	//	Private
 	//
-	private function _IsCheckServerListening()
-	{
-		$bRet = false;
 
-		//	...
-		$nErrorId	= -1;
-		$sErrorStr	= '';
-		$nTimeout	= 3;
-
-		try
-		{
-			$fp = fsockopen( self::CONST_CHECK_SERVER_HOST, self::CONST_CHECK_SERVER_PORT, $nErrorId, $sErrorStr, $nTimeout );
-			if ( false !== $fp )
-			{
-				$bRet = true;
-
-				fclose( $fp );
-			}
-		}
-		catch ( \Exception $e )
-		{}
-
-		//	...
-		return $bRet;
-	}
-
-	private function _IsWebsiteAvailable( & $nStatusCode = 0 )
-	{
-		$cRequest	= vdata\CRequest::GetInstance();
-
-		//	...
-		$bRet		= false;
-
-		//	...
-		$arrResp	= null;
-		$sUrl		= $this->_GetCheckServiceUrl();
-
-		$nCall		= $cRequest->HttpRaw
-		(
-			[
-				'method'	=> 'GET',
-				'url'		=> $sUrl,
-			],
-			$arrResp
-		);
-		if ( vdata\CConst::ERROR_SUCCESS == $nCall &&
-			$cRequest->IsValidRawResponse( $arrResp ) )
-		{
-			//	...
-			$nStatusCode	= $arrResp['status'];
-
-			//	...
-			if ( 200 == $arrResp['status'] )
-			{
-				$bRet = true;
-			}
-		}
-
-		return $bRet;
-	}
-
-	private function _GetCheckServiceUrl()
-	{
-		return sprintf( "http://%s:%d", self::CONST_CHECK_SERVER_HOST, self::CONST_CHECK_SERVER_PORT );
-	}
-
-	private function _StartCheckService( $sReleaseDir, callable $pfnCbFunc )
-	{
-		if ( ! is_callable( $pfnCbFunc ) )
-		{
-			throw new \RuntimeException( sprintf( "%s::%s pfnCbFunc is not callable function.", __CLASS__, __FUNCTION__ ) );
-		}
-		if ( ! is_string( $sReleaseDir ) || ! is_dir( $sReleaseDir ) )
-		{
-			$pfnCbFunc( 'error', "\t\t# Error in parameter [sReleaseDir] in " . __FUNCTION__ );
-			return null;
-		}
-
-		//	...
-		$bRet = false;
-
-		//	...
-		$sCmdLine	= sprintf
-		(
-			"php -S %s:%d -t \"%s/public\" > /dev/null 2>&1 &",
-			self::CONST_CHECK_SERVER_HOST,
-			self::CONST_CHECK_SERVER_PORT,
-			libs\Lib::RTrimPath( $sReleaseDir )
-		);
-
-		//	...
-		$cProcess	= new Process\Process( $sCmdLine );
-		$cProcess
-			->setTimeout( libs\Config::Get( 'cmd_timeout' ) )
-			->enableOutput()
-			->run()
-		;
-
-		if ( $cProcess->isSuccessful() )
-		{
-			$bRet = true;
-
-			if ( is_callable( $pfnCbFunc ) )
-			{
-				$pfnCbFunc( 'info', "\t\t: Start [" . self::CONST_CHECK_SERVER_NAME . "] successfully." );
-			}
-		}
-		else
-		{
-			if ( is_callable( $pfnCbFunc ) )
-			{
-				$pfnCbFunc( 'error', "\t\t: Failed to start [" . self::CONST_CHECK_SERVER_NAME . "]." );
-				$pfnCbFunc( 'error', $cProcess->getErrorOutput() );
-			}
-		}
-
-		return $bRet;
-	}
-
-	private function _StopCheckService( callable $pfnCbFunc )
-	{
-		$bRet = false;
-
-		if ( $this->_IsCheckServerListening() )
-		{
-			//	...
-			$sCmdLine	= sprintf( "kill -9 $(lsof -t -i:%d) > /dev/null 2>&1", self::CONST_CHECK_SERVER_PORT );
-
-			//	...
-			$cProcess	= new Process\Process( $sCmdLine );
-			$cProcess
-				->setTimeout( libs\Config::Get( 'cmd_timeout' ) )
-				->enableOutput()
-				->run()
-			;
-
-			if ( $cProcess->isSuccessful() )
-			{
-				$bRet = true;
-
-				$pfnCbFunc( 'info', "\t\t: Stop [" . self::CONST_CHECK_SERVER_NAME . "] successfully." );
-			}
-			else
-			{
-				$pfnCbFunc( 'error', "\t\t: Failed to stop [" . self::CONST_CHECK_SERVER_NAME . "]." );
-				$pfnCbFunc( 'error', $cProcess->getErrorOutput() );
-			}
-		}
-		else
-		{
-			$pfnCbFunc( 'info', "\t\t: [" . self::CONST_CHECK_SERVER_NAME . "] already stopped." );
-		}
-
-		return $bRet;
-	}
 }
