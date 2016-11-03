@@ -96,6 +96,8 @@ class CCheck
 				//
 				//	try to stop mini http server
 				//
+				$pfnCbFunc( 'info',
+					sprintf( "MINI-SERVER\t: Try to launch a mini-server on tcp port %d to check your website", $cMiniSrv->GetServerPort() ) );
 				$cMiniSrv->SafeRestart( $sReleaseDir, $pfnCbFunc );
 
 				//	...
@@ -103,7 +105,7 @@ class CCheck
 
 				if ( $cMiniSrv->IsListening() )
 				{
-					$pfnCbFunc( 'info', sprintf( "\t\t: Access: %s", $cMiniSrv->GetServerUrl() ) );
+					$pfnCbFunc( 'sinfo', sprintf( "CHECKING\t: %s", $cMiniSrv->GetServerUrl() ) );
 
 					$nStatusCode	= 0;
 					if ( $cMiniSrv->IsWebAvailable( $nStatusCode ) )
@@ -111,12 +113,13 @@ class CCheck
 						$nRet = 0;
 
 						//	...
-						$pfnCbFunc( 'info', "\t\t: Website works well!" );
+						$pfnCbFunc( 'sinfo', "\t\t\t\t\t\t[WORKS WELL]" );
 					}
 					else
 					{
-						$pfnCbFunc( 'comment', sprintf( "\t\t# Website is not available, status code is %d.", $nStatusCode ) );
+						$pfnCbFunc( 'scomment', sprintf( "\t\t\t\t\t\t[NOT AVAILABLE] http code %d.", $nStatusCode ) );
 					}
+					$pfnCbFunc( 'info', "" );
 				}
 				else
 				{
