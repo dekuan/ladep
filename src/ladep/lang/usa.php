@@ -17,4 +17,5 @@ return
 	"error_create_env_file"		=> "Error in creating new env file.",
 	"error_chmod_file"		=> "Error in executing command chmod.",
 	"error_save_status"		=> "Error in saving status.",
+	"error_rebuild_classes_map"	=> "Error in rebuilding classes map.",
 ];

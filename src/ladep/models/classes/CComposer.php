@@ -79,6 +79,33 @@ class CComposer
 						$bModified = true;
 						unset( $arrJson[ 'scripts' ][ 'pre-update-cmd' ] );
 					}
+
+					//
+					//	remove "require-dev":
+					//	remove "autoload-dev":
+					//
+					if ( array_key_exists( 'require-dev', $arrJson ) )
+					{
+						if ( is_callable( $pfnCbFunc ) )
+						{
+							$pfnCbFunc( "comment", "Key require-dev was found." );
+						}
+
+						//	...
+						$bModified = true;
+						unset( $arrJson[ 'require-dev' ] );
+					}
+					if ( array_key_exists( 'autoload-dev', $arrJson ) )
+					{
+						if ( is_callable( $pfnCbFunc ) )
+						{
+							$pfnCbFunc( "comment", "Key autoload-dev was found." );
+						}
+
+						//	...
+						$bModified = true;
+						unset( $arrJson[ 'autoload-dev' ] );
+					}
 				}
 
 				if ( $bModified )
