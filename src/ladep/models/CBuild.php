@@ -2,6 +2,7 @@
 
 namespace dekuan\ladep\models;
 
+
 use Symfony\Component\Process;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input;
@@ -10,6 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use dekuan\vdata;
+use dekuan\delib\CLib;
 use dekuan\ladep\libs;
 use dekuan\ladep\models\classes;
 
@@ -148,6 +150,7 @@ class CBuild
 				$pfnCbFunc( "info", "" );
 				$pfnCbFunc( "info", "" );
 			}
+
 
 			//
 			//	create .env for new release
@@ -414,6 +417,33 @@ class CBuild
 			}
 
 
+			//
+			//	Rebuild classes map
+			//
+			//	execute:
+			//	php artisan clear-compiled
+			//	php artisan optimize
+			//
+			if ( $bContinue )
+			{
+				$bContinue = false;
+				$pfnCbFunc( 'info', sprintf( "Rebuild classes map" ) );
+				if ( $this->_RebuildClassesMap( $sDirNew, $pfnCbFunc ) )
+				{
+					$pfnCbFunc( "info", "Rebuild classes map successfully." );
+					$bContinue = true;
+				}
+				else
+				{
+					$sFormat	= libs\Lang::Get( "error_rebuild_classes_map" );
+					$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
+					$pfnCbFunc( "error", $sErrorDesc );
+				}
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( "info", "" );
+			}
+
 
 		//	$bContinue	= true;
 		//	$sSrcDir	= libs\Lib::GetLocalReleaseDir( $sProjectName ) . "/1.0.3-bak/";
@@ -466,6 +496,7 @@ class CBuild
 //				$pfnCbFunc( "info", "" );
 //			}
 
+
 			//
 			//	save status
 			//
@@ -475,7 +506,7 @@ class CBuild
 				$pfnCbFunc( 'info', sprintf( "Saving building status" ) );
 				if ( $this->_SaveStatus( $sDirNew, 1, $pfnCbFunc ) )
 				{
-					$pfnCbFunc( "info", "Building status was saved successfully." );
+					$pfnCbFunc( "info", "Built status was saved successfully." );
 					$bContinue = true;
 				}
 				else
@@ -668,7 +699,7 @@ class CBuild
 		$bRet		= false;
 		$cComposer	= new classes\CComposer();
 
-		$bCleanUp	= $cComposer->CleanUpComposer($sReleaseDir, $pfnCbFunc );
+		$bCleanUp	= $cComposer->CleanUpComposer( $sReleaseDir, $pfnCbFunc );
 		if ( $bCleanUp )
 		{
 			//	...
@@ -810,6 +841,126 @@ class CBuild
 		return $bRet;
 	}
 
+	//
+	//	php artisan clear-compiled
+	//	php artisan optimize
+	//
+	private function _RebuildClassesMap( $sReleaseDir, callable $pfnCbFunc )
+	{
+		return (
+			$this->_RunArtisanCommand( $sReleaseDir, "clear-compiled", $pfnCbFunc )
+			&&
+			$this->_RunArtisanCommand( $sReleaseDir, "optimize", $pfnCbFunc )
+		);
+	}
+
+	private function _RunArtisanCommand( $sReleaseDir, $sCommandName, callable $pfnCbFunc )
+	{
+		if ( ! CLib::IsExistingString( $sReleaseDir, true ) || ! is_dir( $sReleaseDir ) )
+		{
+			return false;
+		}
+		if ( ! CLib::IsExistingString( $sCommandName, true ) )
+		{
+			return false;
+		}
+
+		$bRet		= false;
+		$cComposer	= new classes\CComposer();
+
+		//
+		//	"php artisan clear-compiled"
+		//	"php artisan optimize"
+		//
+		$bCleanUp	= $cComposer->CleanUpComposer( $sReleaseDir, $pfnCbFunc );
+		if ( $bCleanUp )
+		{
+			//	save old dir
+			$sOldWorkingDir	= getcwd();
+
+			//	...
+			chdir( $sReleaseDir );
+			if ( is_callable( $pfnCbFunc ) )
+			{
+				$pfnCbFunc( "info", sprintf( "Changed CWD to %s", $sReleaseDir ) );
+			}
+
+			//	...
+			$sCommand	= sprintf( "php artisan %s", $sCommandName );
+			if ( is_callable( $pfnCbFunc ) )
+			{
+				$pfnCbFunc( "info", $sCommand );
+			}
+
+			$cProcess	= new Process\Process( $sCommand, $sReleaseDir );
+			$cProcess
+				->setWorkingDirectory( $sReleaseDir )
+				->setTimeout( libs\Config::Get( 'cmd_timeout' ) )
+				->enableOutput()
+				->run( function( $sType, $sBuffer ) use ( $pfnCbFunc )
+				{
+					if ( Process\Process::OUT === $sType )
+					{
+						if ( is_callable( $pfnCbFunc ) )
+						{
+							$pfnCbFunc( "info", trim( $sBuffer ) );
+						}
+					}
+					else if ( Process\Process::ERR == $sType )
+					{
+						if ( is_callable( $pfnCbFunc ) )
+						{
+							$pfnCbFunc( "comment", trim( $sBuffer ) );
+						}
+					}
+					else
+					{
+						if ( is_callable( $pfnCbFunc ) )
+						{
+							$pfnCbFunc( "comment", trim( $sBuffer ) );
+						}
+					}
+
+					return true;
+				})
+			;
+
+			if ( $cProcess->isSuccessful() )
+			{
+				$bRet = true;
+				if ( is_callable( $pfnCbFunc ) )
+				{
+					$pfnCbFunc( "info", sprintf( "artisan %s successfully.", $sCommandName ) );
+				}
+			}
+			else
+			{
+				if ( is_callable( $pfnCbFunc ) )
+				{
+					$pfnCbFunc( "error", $cProcess->getErrorOutput() );
+				}
+			}
+
+
+			//	change dir to old
+			chdir( $sOldWorkingDir );
+			if ( is_callable( $pfnCbFunc ) )
+			{
+				$pfnCbFunc( "info", sprintf( "Changed CWD to %s", $sOldWorkingDir ) );
+			}
+		}
+		else
+		{
+			if ( is_callable( $pfnCbFunc ) )
+			{
+				$pfnCbFunc( "error", "Falied to clean up composer.json" );
+			}
+		}
+
+		return $bRet;
+	}
+
+
 	private function _SetupConfigApp( $sReleaseDir, classes\CProject $cProject, callable $pfnCbFunc )
 	{
 		$cSetup	= new classes\CSetup();
@@ -876,8 +1027,6 @@ class CBuild
 		//	...
 		return $cStatus->SaveStatus( $sReleaseDir, $bReady );
 	}
-
-
 
 	private function _CompressAndInjectFilesIntoView( $sProjectName, $sVer, $arrOptions, callable $pfnCbFunc )
 	{
