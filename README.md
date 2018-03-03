@@ -1,6 +1,6 @@
 # Ladep
 
-Ladep is the world's best deployer for Laravel framework. It's the best way to deploy your Laravel projects. And definitely, Ladep is open source, secure and easy-to-use. Learn more about [How It Works](https://www.ladep.cn/docs#howitworks).
+Ladep is the world's best deployer for Laravel framework. It's the best way to deploy your Laravel projects. And definitely, Ladep is open source, secure and easy-to-use. Learn more about [How It Works](http://ladep.dekuan.org/docs#howitworks).
 
 <br />
 <br />
@@ -23,7 +23,7 @@ $ wget https://raw.githubusercontent.com/dekuan/ladep/master/tools/install.php -
 
 ### DOCUMENTATION
 
-[https://www.ladep.cn/docs](https://www.ladep.cn/docs)
+[http://ladep.dekuan.org/docs](http://ladep.dekuan.org/docs)
 
 <br />
 <br />
@@ -88,7 +88,7 @@ All database connection parameters will be assembled automatically while your pr
 
 
 <div style="text-align:center;">
-<a href="https://www.ladep.cn/docs">VIEW DOCUMENTATION</a>
+<a href="http://ladep.dekuan.org/docs">VIEW DOCUMENTATION</a>
 </div>
 
 
