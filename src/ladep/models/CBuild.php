@@ -317,6 +317,31 @@ class CBuild
 				$pfnCbFunc( "info", "" );
 			}
 
+			
+			//
+			//	Assemble /config/xc.php for production server
+			//
+			if ( $bContinue )
+			{
+				$bContinue = false;
+				$pfnCbFunc( 'info', sprintf( "Setting up config/xc.php", __CLASS__, __FUNCTION__ ) );
+				if ( $this->_SetupConfigXc( $sDirNew, $this->m_cProject, $pfnCbFunc ) )
+				{
+					$pfnCbFunc( "info", "config/xc.php was set up successfully." );
+					$bContinue = true;
+				}
+				else
+				{
+					$sFormat	= libs\Lang::Get( "error_setup_xc" );
+					$sErrorDesc	= sprintf( $sFormat, $sRepoUrl );
+					$pfnCbFunc( "error", $sErrorDesc );
+				}
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( "info", "" );
+				$pfnCbFunc( "info", "" );
+			}
+			
+
 			//
 			//	Assemble /config/session.php for production server
 			//
@@ -985,6 +1010,13 @@ class CBuild
 		$cSetup	= new classes\CSetup();
 		return $cSetup->SetupConfigDatabase( $sReleaseDir, $cProject, $pfnCbFunc );
 	}
+
+	private function _SetupConfigXc( $sReleaseDir, classes\CProject $cProject, callable $pfnCbFunc )
+	{
+		$cSetup	= new classes\CSetup();
+		return $cSetup->SetupConfigXc( $sReleaseDir, $cProject, $pfnCbFunc );
+	}
+
 	private function _SetupConfigSession( $sReleaseDir, classes\CProject $cProject, callable $pfnCbFunc )
 	{
 		$cSetup	= new classes\CSetup();

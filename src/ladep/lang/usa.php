@@ -11,6 +11,7 @@ return
 	"error_composer_update"		=> "Error in composer update.",
 	"error_setup_app"		=> "Error in setting app.",
 	"error_setup_database"		=> "Error in setting database.",
+	"error_setup_xc"		=> "Error in setting xc.",
 	"error_setup_session"		=> "Error in setting session.",
 	"error_cleanup_files"		=> "Error in cleaning up files.",
 	"error_compress_files"		=> "Error in compressing files.",
