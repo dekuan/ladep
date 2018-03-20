@@ -27,6 +27,10 @@ class CSetup
 	{
 		return ( CConst::ERROR_SUCCESS == $this->_SetupConfigFile( 'database.php', $sReleaseDir, $cProject, $pfnCbFunc ) );
 	}
+	public function SetupConfigXc( $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
+	{
+		return ( CConst::ERROR_SUCCESS == $this->_SetupConfigFile( 'xc.php', $sReleaseDir, $cProject, $pfnCbFunc ) );
+	}
 	public function SetupConfigSession( $sReleaseDir, CProject $cProject, callable $pfnCbFunc = null )
 	{
 		$bRet	= false;
